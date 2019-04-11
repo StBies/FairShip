@@ -2822,6 +2822,10 @@ def plotBiasedResiduals(nEvent=-1,nTot=1000,PR=1,onlyPlotting=False,minP=3.):
        rc = h['biasResTrackMom'].Fill(sta.getMomMag())
        timerStats['prepareTrack']+=timer.RealTime()
        timer.Start()
+       #Event drawing test
+       if Nr == 0:
+           DtAlignment.utils.display.display_event(aTrack,dt_modules)
+           
        """
        New calculation of residuals
        """
