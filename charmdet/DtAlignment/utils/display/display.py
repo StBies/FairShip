@@ -45,5 +45,6 @@ def display_event(track,dt_modules):
         hit.Draw()
         
     #TODO draw track line
+    canvas.SaveAs("Test_disp.pdf")
     
     
