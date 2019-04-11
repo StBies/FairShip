@@ -31,7 +31,8 @@ def display_event(track,dt_modules):
     hits = []
     for point in track.getPointsWithMeasurement():
         raw = point.getRawMeasurement()
-        parse_result = DtAlignment.utils.parse_det_id(raw.getDetId())
+        det_id = raw.getDetId()
+        parse_result = DtAlignment.utils.parse_det_id(det_id)
         drift_radius = raw.getRawHitCoords()[6]
         module = dt_modules[parse_result['module']]
         #TODO horribly slow
