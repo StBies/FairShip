@@ -1,5 +1,6 @@
 import DtAlignment.DriftTube as DriftTube
 import DtAlignment.DtModule as DtModule
+import DtAlignment.utils
 import ROOT
 
 def display_event(track,dt_modules):
