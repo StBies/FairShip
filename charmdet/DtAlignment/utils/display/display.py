@@ -17,13 +17,13 @@ def display_event(track,dt_modules):
         dictionary containing all the DtModule objects of which the detector is built
     """
     canvas = ROOT.TCanvas("Simple DT display")
-    canvas.Range(-1000,-1000,1000,1000)
+    canvas.Range(-20,-120,750,120)
     
     #Draw all the tubes
     tubes = []
     for key in dt_modules.keys():
         for tube in dt_modules[key].get_tubes():
-            tubes.append(ROOT.TEllipse(tube._position[0],tube._position[2],1.85))
+            tubes.append(ROOT.TEllipse(tube._position[2],tube._position[0],1.815))
     
     for tube in tubes:
         tube.Draw()
@@ -42,7 +42,7 @@ def display_event(track,dt_modules):
             if tube._ID == det_id:
                 break
         tube = module.get_tubes()[j]
-        hit_circle = ROOT.TEllipse(tube._position[0],tube._position[2],drift_radius)
+        hit_circle = ROOT.TEllipse(tube._position[2],tube._position[0],drift_radius)
         hit_circle.SetFillColor(ROOT.kRed)
         hits.append(hit_circle)
         
