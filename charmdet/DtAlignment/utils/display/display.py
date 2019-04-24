@@ -29,24 +29,8 @@ def display_event(track,dt_modules):
     for tube in tubes:
         tube.Draw("SAME")
         
-    #Draw hits
-    hits = []
-    for point in track.getPointsWithMeasurement():
-        raw = point.getRawMeasurement()
-        det_id = raw.getDetId()
-        parse_result = DtAlignment.utils.parse_det_id(det_id)
-        drift_radius = raw.getRawHitCoords()[6]
-        module = dt_modules[parse_result['module']]
-        #TODO horribly slow
-        for j in range(len(module.get_tubes())):
-            tube = module.get_tubes()[j]
-            if tube._ID == det_id:
-                break
-        tube = module.get_tubes()[j]
-        hit_circle = ROOT.TEllipse(tube._position[2],tube._position[0],drift_radius)
-        hit_circle.SetFillColor(ROOT.kRed)
-        hits.append(hit_circle)
-        
+    hits = _create_driftcircles(track, dt_modules) 
+    
     for hit in hits:
         hit.Draw()
         
@@ -131,5 +115,40 @@ def _create_trackline(track):
     polyline.SetLineColor(ROOT.kMagenta)
     
     return polyline
+
+def _create_driftcircles(track,dt_modules):
+    """ Creates and returns a list of drift circles that can then be drawn to any canvas.
+    
+    Parameters
+    ----------
+    track: genfit.Track
+        Track for that the hits should be drawn
+        
+    dt_modules: dict
+        dictionary containing the DtModule objects. The coordinates of the hit wires are read from here.
+        
+    Returns
+    -------
+    List of ROOT.TEllipse objects
+    """
+    hits = []
+    for point in track.getPointsWithMeasurement():
+        raw = point.getRawMeasurement()
+        det_id = raw.getDetId()
+        parse_result = DtAlignment.utils.parse_det_id(det_id)
+        drift_radius = raw.getRawHitCoords()[6]
+        module = dt_modules[parse_result['module']]
+        #TODO horribly slow, could read det coords from hit.
+        for j in range(len(module.get_tubes())):
+            tube = module.get_tubes()[j]
+            if tube._ID == det_id:
+                break
+        tube = module.get_tubes()[j]
+        hit_circle = ROOT.TEllipse(tube._position[2],tube._position[0],drift_radius)
+        hit_circle.SetFillColor(ROOT.kRed)
+        hit_circle.SetLineWidth(1)
+        hits.append(hit_circle)
+        
+    return hits
         
     
