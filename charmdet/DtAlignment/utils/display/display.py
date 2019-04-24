@@ -66,7 +66,7 @@ def _draw_detector(canvas,dt_modules):
             tubes.append(ROOT.TEllipse(tube._position[2],tube._position[0],1.815))
     
     for tube in tubes:
-        tube.Draw()
+        tube.Draw("SAME")
     
 def _draw_trackline(canvas,track):
     """ Draws a line for the track trajectory onto the passed TCanvas or TPad object.
