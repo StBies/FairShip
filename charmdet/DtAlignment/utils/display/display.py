@@ -42,7 +42,7 @@ def display_event(track,dt_modules):
     for hit in hits:
         hit.Draw()
         
-    #TODO draw track line
+    _draw_trackline(canvas, track)
     canvas.SaveAs("Test_disp.pdf")
     
 def _draw_detector(canvas,dt_modules):
@@ -56,7 +56,7 @@ def _draw_detector(canvas,dt_modules):
     dt_modules: dict
         Dictionary with module names as keys and DtModule objects contained. Everything in this dict will be drawn
     """
-    canvas.cd()
+    #canvas.cd()
     tubes = []
     for key in dt_modules.keys():
         for tube in dt_modules[key].get_tubes():
@@ -77,7 +77,7 @@ def _draw_trackline(canvas,track):
     track: genfit.Track
         Track object that should be drawn
     """
-    canvas.cd()
+    #canvas.cd()
     n_points = track.getNumPointsWithMeasurement()
     trajectory_points = [0] * n_points
     trajectory_momenta = [0] * n_points
