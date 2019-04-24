@@ -10,23 +10,16 @@ def display_event(track,dt_modules):
     
     Parameters
     ----------
-    track:
+    track: genfit.Track
         genfit Track object containing the fit as well as the points used for fitting
     
-    dt_modules:
+    dt_modules: dict
         dictionary containing all the DtModule objects of which the detector is built
     """
     canvas = ROOT.TCanvas("Simple DT display")
     canvas.Range(-20,-120,800,120)
     
-    #Draw all the tubes
-    tubes = []
-    for key in dt_modules.keys():
-        for tube in dt_modules[key].get_tubes():
-            tubes.append(ROOT.TEllipse(tube._position[2],tube._position[0],1.815))
-    
-    for tube in tubes:
-        tube.Draw()
+    _draw_detector(canvas, dt_modules)
         
     #Draw hits
     hits = []
@@ -52,4 +45,51 @@ def display_event(track,dt_modules):
     #TODO draw track line
     canvas.SaveAs("Test_disp.pdf")
     
+def _draw_detector(canvas,dt_modules):
+    """ Draws the whole detector into the passed canvas object.
+    
+    Parameters
+    ----------
+    canvas: ROOT.TCanvas
+        TCanvas or TPad in that the detector should be drawn
+        
+    dt_modules: dict
+        Dictionary with module names as keys and DtModule objects contained. Everything in this dict will be drawn
+    """
+    canvas.cd()
+    tubes = []
+    for key in dt_modules.keys():
+        for tube in dt_modules[key].get_tubes():
+            tubes.append(ROOT.TEllipse(tube._position[2],tube._position[0],1.815))
+    
+    for tube in tubes:
+        tube.Draw()
+    
+def _draw_trackline(canvas,track):
+    """ Draws a line for the track trajectory onto the passed TCanvas or TPad object.
+    This draws __segments__ of the track between each pair of two consecutive hits.
+    
+    Parameters
+    ----------
+    canvas: ROOT.TCanvas
+        TCanvas or TPad in that the detector should be drawn
+    
+    track: genfit.Track
+        Track object that should be drawn
+    """
+    canvas.cd()
+    n_points = track.getNumPointsWithMeasurement()
+    trajectory_points = [0] * n_points
+    trajectory_momenta = [0] * n_points
+    for i in range(n_points):
+        fitted_state = track.getFittedState(i)
+        trajectory_momenta.append(fitted_state.getMom())
+        trajectory_points.append(fitted_state.getPos())
+        
+    x_coords = [pos[0] for pos in trajectory_points]
+    z_coords = [pos[2] for pos in trajectory_points]
+    polyline = ROOT.TPolyLine(len(x_coords),z_coords,x_coords)
+    polyline.Draw()
+    
+        
     
