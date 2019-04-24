@@ -86,8 +86,8 @@ def _draw_trackline(canvas,track):
         trajectory_momenta.append(fitted_state.getMom())
         trajectory_points.append(fitted_state.getPos())
         
-    x_coords = [pos[0] for pos in trajectory_points]
-    z_coords = [pos[2] for pos in trajectory_points]
+    x_coords = [pos.x() for pos in trajectory_points]
+    z_coords = [pos.z() for pos in trajectory_points]
     polyline = ROOT.TPolyLine(len(x_coords),z_coords,x_coords)
     polyline.Draw()
     
