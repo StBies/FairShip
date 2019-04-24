@@ -21,7 +21,13 @@ def display_event(track,dt_modules):
     canvas.Range(-20,-120,800,120)
     
     #TODO not yet drawn
-    _draw_detector(canvas, dt_modules)
+    tubes = []
+    for key in dt_modules.keys():
+        for tube in dt_modules[key].get_tubes():
+            tubes.append(ROOT.TEllipse(tube._position[2],tube._position[0],1.815))
+    
+    for tube in tubes:
+        tube.Draw("SAME")
         
     #Draw hits
     hits = []
@@ -59,7 +65,7 @@ def _draw_detector(canvas,dt_modules):
     dt_modules: dict
         Dictionary with module names as keys and DtModule objects contained. Everything in this dict will be drawn
     """
-    #canvas.cd()
+    canvas.cd()
     tubes = []
     for key in dt_modules.keys():
         for tube in dt_modules[key].get_tubes():
@@ -121,6 +127,9 @@ def _create_trackline(track):
         x_coords[i] = fitted_state.getPos()[0]
         z_coords[i] = fitted_state.getPos()[2]
     
-    return ROOT.TPolyLine(n_points,z_coords,x_coords)
+    polyline = ROOT.TPolyLine(n_points,z_coords,x_coords)
+    polyline.SetLineColor(ROOT.kMagenta)
+    
+    return polyline
         
     
