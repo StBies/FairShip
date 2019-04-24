@@ -2,6 +2,7 @@ import DtAlignment.DriftTube as DriftTube
 import DtAlignment.DtModule as DtModule
 import DtAlignment.utils
 import ROOT
+import numpy as np
 
 def display_event(track,dt_modules):
     """ Draw a simple event in x-z-projection with positions of all the tubes in the
@@ -85,10 +86,14 @@ def _draw_trackline(canvas,track):
         fitted_state = track.getFittedState(i)
         trajectory_momenta[i] = fitted_state.getMom()
         trajectory_points[i] = fitted_state.getPos()
-        
-    x_coords = [pos.x() for pos in trajectory_points]
-    z_coords = [pos.z() for pos in trajectory_points]
-    polyline = ROOT.TPolyLine(len(x_coords),z_coords,x_coords)
+    
+       
+    x_coords = np.empty(n_points,dtype=np.float64)
+    z_coords = np.empty(n_points,dtype=np.float64)
+    for i in range(n_points):
+        x_coords[i] = trajectory_points[i][0]
+        z_coords[i] = trajectory_points[i][2]
+    polyline = ROOT.TPolyLine(n_points,z_coords,x_coords)
     polyline.Draw()
     
         
