@@ -20,6 +20,7 @@ def display_event(track,dt_modules):
     canvas = ROOT.TCanvas("Simple DT display")
     canvas.Range(-20,-120,800,120)
     
+    #TODO not yet drawn
     _draw_detector(canvas, dt_modules)
         
     #Draw hits
@@ -43,7 +44,8 @@ def display_event(track,dt_modules):
     for hit in hits:
         hit.Draw()
         
-    _draw_trackline(canvas, track)
+    trajectory = _create_trackline(track)
+    trajectory.Draw()
     canvas.SaveAs("Test_disp.pdf")
     
 def _draw_detector(canvas,dt_modules):
@@ -96,5 +98,29 @@ def _draw_trackline(canvas,track):
     polyline = ROOT.TPolyLine(n_points,z_coords,x_coords)
     polyline.Draw()
     
+def _create_trackline(track):
+    """ Create a TPolyLine from the hits of a given track object.
+    
+    Parameters
+    ----------
+    track: genfit.Track
+        Track object that should be drawn
+        
+    Returns
+    -------
+    ROOT.TPolyLine
+        Object containing the line information that is drawable
+    """
+    n_points = track.getNumPointsWithMeasurement()
+    
+    x_coords = np.empty(n_points,dtype=np.float64)
+    z_coords = np.empty(n_points,dtype=np.float64)
+    
+    for i in range(n_points):
+        fitted_state = track.getFittedState(i)
+        x_coords[i] = fitted_state.getPos()[0]
+        z_coords[i] = fitted_state.getPos()[2]
+    
+    return ROOT.TPolyLine(n_points,z_coords,x_coords)
         
     
