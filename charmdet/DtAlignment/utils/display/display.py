@@ -83,8 +83,8 @@ def _draw_trackline(canvas,track):
     trajectory_momenta = [0] * n_points
     for i in range(n_points):
         fitted_state = track.getFittedState(i)
-        trajectory_momenta.append(fitted_state.getMom())
-        trajectory_points.append(fitted_state.getPos())
+        trajectory_momenta[i] = fitted_state.getMom()
+        trajectory_points[i] = fitted_state.getPos()
         
     x_coords = [pos.x() for pos in trajectory_points]
     z_coords = [pos.z() for pos in trajectory_points]
