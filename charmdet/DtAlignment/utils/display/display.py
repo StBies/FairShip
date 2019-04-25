@@ -20,7 +20,6 @@ def display_event(track,dt_modules):
     canvas = ROOT.TCanvas("Simple DT display")
     canvas.Range(-20,-120,800,120)
     
-    #TODO not yet drawn
     tubes = []
     for key in dt_modules.keys():
         for tube in dt_modules[key].get_tubes():
@@ -37,7 +36,8 @@ def display_event(track,dt_modules):
     trajectory = _create_trackline(track)
     trajectory.Draw()
     canvas.SaveAs("Test_disp.pdf")
-    
+  
+#TODO doesn't work probably due to wrong pointer to canvas  
 def _draw_detector(canvas,dt_modules):
     """ Draws the whole detector into the passed canvas object.
     
@@ -58,35 +58,6 @@ def _draw_detector(canvas,dt_modules):
     for tube in tubes:
         tube.Draw("SAME")
     
-def _draw_trackline(canvas,track):
-    """ Draws a line for the track trajectory onto the passed TCanvas or TPad object.
-    This draws __segments__ of the track between each pair of two consecutive hits.
-    
-    Parameters
-    ----------
-    canvas: ROOT.TCanvas
-        TCanvas or TPad in that the detector should be drawn
-    
-    track: genfit.Track
-        Track object that should be drawn
-    """
-    #canvas.cd()
-    n_points = track.getNumPointsWithMeasurement()
-    trajectory_points = [0] * n_points
-    trajectory_momenta = [0] * n_points
-    for i in range(n_points):
-        fitted_state = track.getFittedState(i)
-        trajectory_momenta[i] = fitted_state.getMom()
-        trajectory_points[i] = fitted_state.getPos()
-    
-       
-    x_coords = np.empty(n_points,dtype=np.float64)
-    z_coords = np.empty(n_points,dtype=np.float64)
-    for i in range(n_points):
-        x_coords[i] = trajectory_points[i][0]
-        z_coords[i] = trajectory_points[i][2]
-    polyline = ROOT.TPolyLine(n_points,z_coords,x_coords)
-    polyline.Draw()
     
 def _create_trackline(track):
     """ Create a TPolyLine from the hits of a given track object.
