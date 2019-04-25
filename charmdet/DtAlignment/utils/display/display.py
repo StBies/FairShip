@@ -17,8 +17,9 @@ def display_event(track,dt_modules):
     dt_modules: dict
         dictionary containing all the DtModule objects of which the detector is built
     """
-    canvas = ROOT.TCanvas("Simple DT display")
-    canvas.Range(-20,-120,800,120)
+    canvas = ROOT.TCanvas("canvas","DT simple display",1600,400)
+    canvas.Range(-120,-120,800,120)
+    ROOT.gStyle.SetLineScalePS(1)
     
     tubes = []
     for key in dt_modules.keys():
