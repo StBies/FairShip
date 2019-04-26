@@ -101,7 +101,8 @@ def _create_driftcircles(track,dt_modules):
         
     Returns
     -------
-    List of ROOT.TEllipse objects
+    list
+        List of ROOT.TEllipse objects
     """
     hits = []
     for point in track.getPointsWithMeasurement():
