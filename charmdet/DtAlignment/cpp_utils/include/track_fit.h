@@ -9,5 +9,6 @@ public:
 	Linear_Fitter();
 	virtual ~Linear_Fitter();
 
+	classDef(Linear_Fitter,1);
 };
 }
