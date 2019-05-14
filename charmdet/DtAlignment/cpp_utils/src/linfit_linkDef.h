@@ -1,0 +1,10 @@
+#ifdef __CINT__
+
+#pragma link off all globals;
+#pragma link off all classes;
+#pragma link off all functions;
+
+// These need no special treatment.
+#pragma link C++ class Dt_alignment::Linear_Fitter+;
+
+#endif // __CINT__
