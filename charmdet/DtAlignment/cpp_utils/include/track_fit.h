@@ -1,3 +1,6 @@
+#ifndef DTALIGNMENT_TRACKFIT_H
+#define DTALIGNMENT_TRACKFIT_H
+
 #include "TObject.h"
 #include <iostream>
 
@@ -9,6 +12,8 @@ public:
 	Linear_Fitter();
 	virtual ~Linear_Fitter();
 
-	classDef(Linear_Fitter,1);
+	ClassDef(Linear_Fitter,1);
 };
 }
+
+#endif //DTALIGNMENT_TRACKFIT_H
