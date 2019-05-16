@@ -1,12 +1,4 @@
-# Create a library called "libgenfit" which includes the source files given in
-# the array .
-# The extension is already found.  Any number of sources could be listed here.
-If (Boost_Avail)
-    INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIR})
-    MESSAGE("-- Boost is found at: ${Boost_INCLUDE_DIR}")
-Else (Boost_Avail)
-    MESSAGE("-- Boost is not found at... ERROR")
-EndIf (Boost_Avail)
+# Create a library called "libDtAlignmentTools" which includes the source files given in
 
 # Set the build type. Possibilities are None, Debug, Release,
 # RelWithDebInfo and MinSizeRel
@@ -28,14 +20,12 @@ link_directories( ${LINK_DIRECTORIES})
 
 # add the list of source code files -- careful, when a new file is added!
 AUX_SOURCE_DIRECTORY( ${CMAKE_SOURCE_DIR}/charmdet/DtAlignment/cpp_utils/src	library_sources )
+set(OWN_DIR ${CMAKE_SOURCE_DIR}/charmdet/DtAlignment/cpp_utils) 
+set(SRCS ${OWN_DIR}/src/track_fit.cpp)
 
-string(REPLACE "/src/" "/include/"  HEADERS "${library_sources}")
-string(REPLACE ".cpp" ".h"  HEADERS "${HEADERS}")
-set(HEADERS "${HEADERS}")
-Set(SRCS ${library_sources})
+# set(HEADERS )
 Set(LINKDEF ${CMAKE_SOURCE_DIR}/charmdet/DtAlignment/cpp_utils/src/linfit_linkDef.h)
 Set(LIBRARY_NAME DtAlignmentTools)
-Set(DEPENDENCIES Core Geom Matrix Eve Gui Physics MathCore EG)
+Set(DEPENDENCIES Core Matrix MathCore)
 
 GENERATE_LIBRARY()
-
