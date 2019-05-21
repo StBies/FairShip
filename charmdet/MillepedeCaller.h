@@ -25,10 +25,14 @@ public:
 					float measured_residual,
 					float sigma);
 
+	void call_end();
+
+	const Mille& get_mille() const;
+
 	ClassDef(MillepedeCaller,1);
 
 private:
-	Mille mille;
+	Mille m_mille;
 };
 
 #endif /* CHARMDET_MILLEPEDECALLER_H_ */

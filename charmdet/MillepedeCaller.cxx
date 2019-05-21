@@ -17,7 +17,7 @@
  * @param writeZero Flag that states if zero values should be kept or not
  */
 MillepedeCaller::MillepedeCaller(const char *outFileName, bool asBinary, bool writeZero)
-: mille(outFileName, asBinary, writeZero)
+: m_mille(outFileName, asBinary, writeZero)
 {
 
 }
@@ -58,5 +58,40 @@ void MillepedeCaller::call_mille(int n_local_derivatives,
 					float measured_residual,
 					float sigma)
 {
-	mille.mille(n_local_derivatives,local_derivatives,n_global_derivatives,global_derivatives,label,measured_residual,sigma);
+	m_mille.mille(n_local_derivatives,local_derivatives,n_global_derivatives,global_derivatives,label,measured_residual,sigma);
+}
+
+
+/**
+ * Call the end function of Mille. This stores a set of local parameters to disk.
+ * Local parameters are specific to one (straight) track for our context. So after
+ * the processing of one track this method sould be called before beginnung to process
+ * the next track.
+ *
+ * @brief Wrapper for Mille's method end() call.
+ *
+ * @author Stefan Bieschke
+ * @date May 21,2019
+ * @version 1.0
+ */
+void MillepedeCaller::call_end()
+{
+	m_mille.end();
+}
+
+/**
+ * Getter for the Mille object stored in this call wrapper. This way, you can manilpulate
+ * the original Mille object.
+ *
+ * @brief Raw Mille obj getter
+ *
+ * @author Stefan Bieschke
+ * @date May 21, 2019
+ * @version 1.0
+ *
+ * @returns const reference to stored Mille object
+ */
+const Mille& MillepedeCaller::get_mille() const
+{
+	return m_mille;
 }
