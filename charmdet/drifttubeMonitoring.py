@@ -2827,8 +2827,6 @@ def plotBiasedResiduals(nEvent=-1,nTot=1000,PR=1,onlyPlotting=False,minP=3.):
         sta = aTrack.getFittedState(0)
         mom = sta.getMom()
         pos = sta.getPos()
-        print("Testing: Processing event number", Nr)
-        milleCaller.list_hits(aTrack)
        except:
         print "problem with getting state, event",sTree.GetCurrentFile().GetName(),Nr
         continue
@@ -2845,6 +2843,8 @@ def plotBiasedResiduals(nEvent=-1,nTot=1000,PR=1,onlyPlotting=False,minP=3.):
        rc = h['biasResTrackMom'].Fill(sta.getMomMag())
        timerStats['prepareTrack']+=timer.RealTime()
        timer.Start()
+       print("Testing: Processing event number", Nr)
+       milleCaller.list_hits(aTrack)
        """
        New calculation of residuals
        """
