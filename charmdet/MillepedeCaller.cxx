@@ -64,13 +64,13 @@ void MillepedeCaller::call_mille(int n_local_derivatives,
 }
 
 //TODO document
-vector<gbl::GblPoint> MillepedeCaller::list_hits(const genfit::Track track) const
+vector<gbl::GblPoint> MillepedeCaller::list_hits(genfit::Track* track) const
 {
 	cout << "Now entering function: MillepedeCaller::list_hits" << endl;
 	vector<gbl::GblPoint> result = {};
 
 	size_t n_points = track.getNumPointsWithMeasurement();
-	vector<genfit::TrackPoint* > points = track.getPointsWithMeasurement();
+	vector<genfit::TrackPoint* > points = track->getPointsWithMeasurement();
 
 	multimap<double,TMatrixD*> jacobians_with_arclen = jacobians_with_arclength(track);
 
@@ -111,7 +111,7 @@ const int* MillepedeCaller::labels() const
  * @warning Requires hit_id_1 = hit_id_2 - 1
  * @warning Requires hit_id_1 < track.getNumPointsWithMeasurement() && hit_id_2 < track.getNumPointsWithMeasurement()
  */
-TMatrixD* MillepedeCaller::calc_jacobian(const genfit::Track track, const unsigned int hit_id_1, const unsigned int hit_id_2) const
+TMatrixD* MillepedeCaller::calc_jacobian(genfit::Track* track, const unsigned int hit_id_1, const unsigned int hit_id_2) const
 {
 	TMatrixD* jacobian = new TMatrixD(5,5);
 
@@ -134,8 +134,8 @@ TMatrixD* MillepedeCaller::calc_jacobian(const genfit::Track track, const unsign
 
 	//2.) enter non-zero partial differentials
 	//2.1) get the two points on track where reconstruction happened
-	genfit::MeasuredStateOnPlane state_at_id_1 = track.getFittedState(hit_id_1);
-	genfit::MeasuredStateOnPlane state_at_id_2 = track.getFittedState(hit_id_2);
+	genfit::MeasuredStateOnPlane state_at_id_1 = track->getFittedState(hit_id_1);
+	genfit::MeasuredStateOnPlane state_at_id_2 = track->getFittedState(hit_id_2);
 
 	TVector3 pos1 = state_at_id_1.getPos();
 	TVector3 pos2 = state_at_id_2.getPos();
@@ -159,11 +159,11 @@ TMatrixD* MillepedeCaller::calc_jacobian(const genfit::Track track, const unsign
 /**
  *
  */
-multimap<double,TMatrixD*> MillepedeCaller::jacobians_with_arclength(const genfit::Track track) const
+multimap<double,TMatrixD*> MillepedeCaller::jacobians_with_arclength(genfit::Track* track) const
 {
 	multimap<double,TMatrixD*,less<double>> result;
 
-	unsigned int n_hits = track.getNumPointsWithMeasurement();
+	unsigned int n_hits = track->getNumPointsWithMeasurement();
 
 	//debugging output
 	cout << " ------- Jacobian ordering ----------" << endl;
@@ -174,8 +174,8 @@ multimap<double,TMatrixD*> MillepedeCaller::jacobians_with_arclength(const genfi
 		//debugging output
 		cout << "Hit: " << hit_id << endl;
 		//calculate length of the track between the two hits (in GBL terms arc length)
-		TVector3 fitted_pos_1 = track.getFittedState(hit_id - 1).getPos();
-		TVector3 fitted_pos_2 = track.getFittedState(hit_id).getPos();
+		TVector3 fitted_pos_1 = track->getFittedState(hit_id - 1).getPos();
+		TVector3 fitted_pos_2 = track->getFittedState(hit_id).getPos();
 		TVector3 between_hits = fitted_pos_2 - fitted_pos_1;
 		double distance = between_hits.Mag();
 
