@@ -66,6 +66,7 @@ void MillepedeCaller::call_mille(int n_local_derivatives,
 //TODO document
 vector<gbl::GblPoint> MillepedeCaller::list_hits(const genfit::Track& track) const
 {
+	cout << "Now entering function: MillepedeCaller::list_hits" << endl;
 	vector<gbl::GblPoint> result = {};
 
 	size_t n_points = track.getNumPointsWithMeasurement();
