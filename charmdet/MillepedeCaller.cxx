@@ -69,7 +69,7 @@ vector<gbl::GblPoint> MillepedeCaller::list_hits(genfit::Track* track) const
 	cout << "Now entering function: MillepedeCaller::list_hits" << endl;
 	vector<gbl::GblPoint> result = {};
 
-	size_t n_points = track.getNumPointsWithMeasurement();
+	size_t n_points = track->getNumPointsWithMeasurement();
 	vector<genfit::TrackPoint* > points = track->getPointsWithMeasurement();
 
 	multimap<double,TMatrixD*> jacobians_with_arclen = jacobians_with_arclength(track);
