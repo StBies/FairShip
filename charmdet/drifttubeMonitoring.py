@@ -2788,7 +2788,7 @@ def plotBiasedResiduals(nEvent=-1,nTot=1000,PR=1,onlyPlotting=False,minP=3.):
   module_residuals[key] = []
   
   #debugging
-  milleCaller = ROOT.MillecedeCaller("test.milletest",True,True)
+  milleCaller = ROOT.MillepedeCaller("test.milletest",True,True)
     
  if not onlyPlotting:
   if not h.has_key('hitMapsX'): plotHitMaps()
