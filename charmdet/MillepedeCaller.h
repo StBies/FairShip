@@ -43,7 +43,7 @@ private:
 	Mille mille;
 
 	//helper methods
-	TMatrixD* calc_jacobian(genfit::Track track*, const unsigned int hit_id_1, const unsigned int hit_id_2) const;
+	TMatrixD* calc_jacobian(genfit::Track* track, const unsigned int hit_id_1, const unsigned int hit_id_2) const;
 	std::multimap<double,TMatrixD*> jacobians_with_arclength(genfit::Track* track) const;
 };
 
