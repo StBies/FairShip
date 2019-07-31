@@ -2786,6 +2786,9 @@ def plotBiasedResiduals(nEvent=-1,nTot=1000,PR=1,onlyPlotting=False,minP=3.):
  module_residuals = {}
  for key in dt_modules.keys():
   module_residuals[key] = []
+  
+  #debugging
+  milleCaller = ROOT.MillecedeCaller("test.milletest",True,True)
     
  if not onlyPlotting:
   if not h.has_key('hitMapsX'): plotHitMaps()
@@ -2806,6 +2809,7 @@ def plotBiasedResiduals(nEvent=-1,nTot=1000,PR=1,onlyPlotting=False,minP=3.):
   timerStats = {'fit':0,'analysis':0,'prepareTrack':0,'extrapTrack':0,'fillRes':0}
   for Nr in range(eventRange[0],eventRange[1]):
    getEvent(Nr)
+
    h['T0tmp'].Reset()
    if Nr%10000==0:   print "now at event",Nr,' of ',sTree.GetEntries(),sTree.GetCurrentFile().GetName(),time.ctime()
    if not findSimpleEvent(sTree): continue
@@ -2823,6 +2827,8 @@ def plotBiasedResiduals(nEvent=-1,nTot=1000,PR=1,onlyPlotting=False,minP=3.):
         sta = aTrack.getFittedState(0)
         mom = sta.getMom()
         pos = sta.getPos()
+        print("Testing: Processing event number", Nr)
+        milleCaller.list_hits(aTrack)
        except:
         print "problem with getting state, event",sTree.GetCurrentFile().GetName(),Nr
         continue
