@@ -207,22 +207,22 @@ double MillepedeCaller::perform_GBL_refit(const genfit::Track& track) const
 /**
  *
  */
-TVector3 MillepedeCaller::calc_shortest_distance(const TVector3& wire_top, const TVector3& wire_bot, const TVector3& track_pos, const TVector3& wire_mom) const
+TVector3 MillepedeCaller::calc_shortest_distance(const TVector3& wire_top, const TVector3& wire_bot, const TVector3& track_pos, const TVector3& track_mom) const
 {
 	TVector3 wire_dir(wire_top - wire_bot);
 
 	TVector3 plane_pos(track_pos - wire_bot);
-	TVector3 plane_dir_1(mom);
+	TVector3 plane_dir_1(track_mom);
 	TVector3 plane_dir_2(-1 * wire_dir);
 
 	TVectorD const_vector(2);
 	TMatrixD coeff_matrix(2,2);
 
-	const_vector[0] = -(plane_pos.Dot(mom));
+	const_vector[0] = -(plane_pos.Dot(track_mom));
 	const_vector[1] = -(plane_pos.Dot(wire_dir));
 
-	coeff_matrix[0][0] = plane_dir_1.Dot(mom);
-	coeff_matrix[0][1] = plane_dir_2.Dot(mom);
+	coeff_matrix[0][0] = plane_dir_1.Dot(track_mom);
+	coeff_matrix[0][1] = plane_dir_2.Dot(track_mom);
 	coeff_matrix[1][0] = plane_dir_1.Dot(wire_dir);
 	coeff_matrix[1][1] = plane_dir_2.Dot(wire_dir);
 
@@ -230,8 +230,8 @@ TVector3 MillepedeCaller::calc_shortest_distance(const TVector3& wire_top, const
 	TVectorD result(const_vector);
 	int rc = solvable_matrix.Solve(result);
 
-	TVector3 PCA_on_track(pos + result[0] * mom);
-	TVector3 PCA_on_wire(vbot + result[1] * wire_dir);
+	TVector3 PCA_on_track(track_pos + result[0] * track_mom);
+	TVector3 PCA_on_wire(wire_bot + result[1] * wire_dir);
 
 	return TVector3(PCA_on_track - PCA_on_wire);
 }
