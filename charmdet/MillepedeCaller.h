@@ -12,6 +12,7 @@
 #include "TMatrixD.h"
 #include <map>
 #include "TVector3.h"
+#include "TDecompLU.h"
 
 //class JacobianWithArclen
 //{
