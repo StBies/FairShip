@@ -67,20 +67,21 @@ void MillepedeCaller::call_mille(int n_local_derivatives,
 vector<gbl::GblPoint> MillepedeCaller::list_hits(genfit::Track* track) const
 {
 	cout << "Now entering function: MillepedeCaller::list_hits" << endl;
-	vector<gbl::GblPoint> result = {};
-
-	size_t n_points = track->getNumPointsWithMeasurement();
-	vector<genfit::TrackPoint* > points = track->getPointsWithMeasurement();
-
-	multimap<double,TMatrixD*> jacobians_with_arclen = jacobians_with_arclength(track);
-
-	for(auto it = jacobians_with_arclen.begin(); it != jacobians_with_arclen.end(); it++)
-	{
-		TMatrixD* jacobian = it->second;
-		result.push_back(gbl::GblPoint(*jacobian));
-	}
-
-	return result;
+//	std::vector<gbl::GblPoint> result = {};
+//
+//	size_t n_points = track->getNumPointsWithMeasurement();
+//	vector<genfit::TrackPoint* > points = track->getPointsWithMeasurement();
+//
+//	multimap<double,TMatrixD*> jacobians_with_arclen = jacobians_with_arclength(track);
+//
+//	for(auto it = jacobians_with_arclen.begin(); it != jacobians_with_arclen.end(); it++)
+//	{
+//		TMatrixD* jacobian = it->second;
+//		result.push_back(gbl::GblPoint(*jacobian));
+//	}
+//
+//	return result;
+	return {};
 }
 
 
