@@ -211,7 +211,7 @@ multimap<double,TMatrixD*> MillepedeCaller::jacobians_with_arclength(const genfi
 double MillepedeCaller::perform_GBL_refit(const genfit::Track& track) const
 {
 	vector<gbl::GblPoint> points = list_hits(&track);
-	cout << "GblPoints vector size:" << points.size() << endl:
+	cout << "GblPoints vector size:" << points.size() << endl;
 	gbl::GblTrajectory traj(points);
 	cout << "Trajectory points number: " << traj.getNumPoints() << endl;
 
