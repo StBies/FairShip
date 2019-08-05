@@ -36,15 +36,16 @@ public:
 
 	std::vector<gbl::GblPoint*> list_hits(genfit::Track* track) const;
 	const int* labels() const;
+	//helper methods
+	TMatrixD* calc_jacobian(genfit::Track* track, const unsigned int hit_id_1, const unsigned int hit_id_2) const;
+	std::multimap<double,TMatrixD*> jacobians_with_arclength(genfit::Track* track) const;
 
 	ClassDef(MillepedeCaller,2);
 
 private:
 	Mille mille;
 
-	//helper methods
-	TMatrixD* calc_jacobian(genfit::Track* track, const unsigned int hit_id_1, const unsigned int hit_id_2) const;
-	std::multimap<double,TMatrixD*> jacobians_with_arclength(genfit::Track* track) const;
+
 };
 
 #endif /* CHARMDET_MILLEPEDECALLER_H_ */
