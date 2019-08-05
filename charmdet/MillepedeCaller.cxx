@@ -163,22 +163,29 @@ multimap<double,TMatrixD*> MillepedeCaller::jacobians_with_arclength(const genfi
 
 	unsigned int n_hits = track->getNumPointsWithMeasurement();
 
+
+	//TODO add unity matrix as first entry
 	for (unsigned int hit_id = 1; hit_id < n_hits; hit_id++)
 	{
-		//calculate length of the track between the two hits (in GBL terms arc length)
-		TVector3 fitted_pos_1 = track->getFittedState(hit_id - 1).getPos();
-		TVector3 fitted_pos_2 = track->getFittedState(hit_id).getPos();
-		TVector3 between_hits = fitted_pos_2 - fitted_pos_1;
-
-		double distance = between_hits.Mag();
-
-		TMatrixD* jacobian = calc_jacobian(track, hit_id - 1, hit_id);
-		result.insert(make_pair(distance, jacobian));
+		result.insert(single_jacobian_with_arclength(*track,hit_id));
 	}
-
 
 	//return a copy of the map. Since it's small it is probably better than handling memory and matrices are stored as pointers to heap
 	return result;
+}
+
+//TODO document - especially 0 < hit_id < max trackpoints
+pair<double,TMatrixD*> MillepedeCaller::single_jacobian_with_arclength(const genfit::Track& track, const unsigned int hit_id) const
+{
+	TVector3 fitted_pos_1 = track.getFittedState(hit_id - 1).getPos();
+	TVector3 fitted_pos_2 = track.getFittedState(hit_id).getPos();
+	TVector3 between_hits = fitted_pos_2 - fitted_pos_1;
+
+	double distance = between_hits.Mag();
+
+	TMatrixD* jacobian = calc_jacobian(track, hit_id - 1, hit_id);
+
+	return make_pair(distance, jacobian);
 }
 
 //TODO document
