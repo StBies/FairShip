@@ -217,7 +217,7 @@ double MillepedeCaller::perform_GBL_refit(const genfit::Track& track) const
 	double chi2, lostWeight;
 
 	cout << "------------performing refit--------------" << endl;
-	cout << "Seed track chi2: " << track.getFitStatus().getChi2() << " Ndf: " << track.getFitStatus().getNdf() << endl;
+	cout << "Seed track chi2: " << track.getFitStatus()->getChi2() << " Ndf: " << track.getFitStatus()->getNdf() << endl;
 
 	rc = traj.fit(chi2,ndf,lostWeight);
 	cout << "Refit chi2: " << chi2 << " Ndf: " << ndf << endl;
