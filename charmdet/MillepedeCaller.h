@@ -34,7 +34,7 @@ public:
 					float measured_residual,
 					float sigma);
 
-	std::vector<gbl::GblPoint*> list_hits(genfit::Track* track) const;
+	std::vector<double> list_hits(genfit::Track* track) const;
 	const int* labels() const;
 	//helper methods
 	TMatrixD* calc_jacobian(genfit::Track* track, const unsigned int hit_id_1, const unsigned int hit_id_2) const;
