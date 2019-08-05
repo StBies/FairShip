@@ -195,7 +195,6 @@ def measurement_vector(tube,mom,pos):
     
     return TVector3(u.mm * (PCA_on_track - PCA_on_wire))
     
-        
 
 def calculate_residuals(track,dtmodules,module_residuals):
     """ Calculates the residuals for a given track and returns these in a dictionary

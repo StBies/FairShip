@@ -66,12 +66,12 @@ void MillepedeCaller::call_mille(int n_local_derivatives,
 //TODO document
 vector<gbl::GblPoint> MillepedeCaller::list_hits(const genfit::Track* track) const
 {
-	cout << "Now entering function: MillepedeCaller::list_hits" << endl;
 	std::vector<gbl::GblPoint> result = {};
 
 	size_t n_points = track->getNumPointsWithMeasurement();
 	vector<genfit::TrackPoint* > points = track->getPointsWithMeasurement();
 
+	//TODO calculate measurements and add before sorting
 	multimap<double,TMatrixD*> jacobians_with_arclen = jacobians_with_arclength(track);
 
 	for(auto it = jacobians_with_arclen.begin(); it != jacobians_with_arclen.end(); it++)
@@ -110,6 +110,7 @@ const int* MillepedeCaller::labels() const
  *
  * @warning Requires hit_id_1 = hit_id_2 - 1
  * @warning Requires hit_id_1 < track.getNumPointsWithMeasurement() && hit_id_2 < track.getNumPointsWithMeasurement()
+ * @warning Heap object without auto deletion
  */
 TMatrixD* MillepedeCaller::calc_jacobian(const genfit::Track* track, const unsigned int hit_id_1, const unsigned int hit_id_2) const
 {
@@ -147,9 +148,6 @@ TMatrixD* MillepedeCaller::calc_jacobian(const genfit::Track* track, const unsig
 	(*jacobian)[3][1] = dx;
 	(*jacobian)[4][2] = dy;
 
-	//debugging output
-	cout << " ------- Jacobian before passing on ----------" << endl;
-	jacobian->Print();
 
 	return jacobian;
 }
@@ -165,38 +163,17 @@ multimap<double,TMatrixD*> MillepedeCaller::jacobians_with_arclength(const genfi
 
 	unsigned int n_hits = track->getNumPointsWithMeasurement();
 
-	//debugging output
-	cout << " ------- Jacobian ordering ----------" << endl;
-	cout << "Ordering jacobians for " << n_hits << " by arclength" << endl;
-
 	for (unsigned int hit_id = 1; hit_id < n_hits; hit_id++)
 	{
-		//debugging output
-		cout << "Hit: " << hit_id << endl;
 		//calculate length of the track between the two hits (in GBL terms arc length)
 		TVector3 fitted_pos_1 = track->getFittedState(hit_id - 1).getPos();
 		TVector3 fitted_pos_2 = track->getFittedState(hit_id).getPos();
 		TVector3 between_hits = fitted_pos_2 - fitted_pos_1;
+
 		double distance = between_hits.Mag();
 
-		cout << "Arc length: " << distance << endl;
-
 		TMatrixD* jacobian = calc_jacobian(track, hit_id - 1, hit_id);
-
-		cout << "Jacbian after passing:" << endl;
-		jacobian->Print();
 		result.insert(make_pair(distance, jacobian));
-	}
-
-	//debugging output
-	cout << "-------- Whole map before passing ----------" << endl;
-	for(auto it = result.begin(); it != result.end(); ++it)
-	{
-		double arclen = it->first;
-		TMatrixD* mat = it->second;
-		cout << "Arclen: " << arclen << endl;
-		mat->Print();
-		cout << "END OF HIT" << endl;
 	}
 
 
@@ -211,9 +188,7 @@ multimap<double,TMatrixD*> MillepedeCaller::jacobians_with_arclength(const genfi
 double MillepedeCaller::perform_GBL_refit(const genfit::Track& track) const
 {
 	vector<gbl::GblPoint> points = list_hits(&track);
-	cout << "GblPoints vector size:" << points.size() << endl;
 	gbl::GblTrajectory traj(points);
-	cout << "Trajectory points number: " << traj.getNumPoints() << endl;
 
 	int rc, ndf;
 	double chi2, lostWeight;
@@ -225,4 +200,38 @@ double MillepedeCaller::perform_GBL_refit(const genfit::Track& track) const
 	cout << "Refit chi2: " << chi2 << " Ndf: " << ndf << endl;
 
 	return chi2;
+}
+
+//TODO document
+//Reimplementation of python function
+/**
+ *
+ */
+TVector3 MillepedeCaller::calc_shortest_distance(const TVector3& wire_top, const TVector3& wire_bot, const TVector3& track_pos, const TVector3& wire_mom) const
+{
+	TVector3 wire_dir(wire_top - wire_bot);
+
+	TVector3 plane_pos(track_pos - wire_bot);
+	TVector3 plane_dir_1(mom);
+	TVector3 plane_dir_2(-1 * wire_dir);
+
+	TVectorD const_vector(2);
+	TMatrixD coeff_matrix(2,2);
+
+	const_vector[0] = -(plane_pos.Dot(mom));
+	const_vector[1] = -(plane_pos.Dot(wire_dir));
+
+	coeff_matrix[0][0] = plane_dir_1.Dot(mom);
+	coeff_matrix[0][1] = plane_dir_2.Dot(mom);
+	coeff_matrix[1][0] = plane_dir_1.Dot(wire_dir);
+	coeff_matrix[1][1] = plane_dir_2.Dot(wire_dir);
+
+	TDecompLU solvable_matrix(coeff_matrix);
+	TVectorD result(const_vector);
+	int rc = solvable_matrix.Solve(result);
+
+	TVector3 PCA_on_track(pos + result[0] * mom);
+	TVector3 PCA_on_wire(vbot + result[1] * wire_dir);
+
+	return TVector3(PCA_on_track - PCA_on_wire);
 }
