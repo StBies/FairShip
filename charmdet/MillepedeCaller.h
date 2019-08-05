@@ -13,6 +13,20 @@
 #include <map>
 #include "TVector3.h"
 
+//class JacobianWithArclen
+//{
+//public:
+//	JacobianWithArclen(TMatrixD* jacobian, double arclen);
+//	~JacobianWithArclen();
+//
+//	TMatrixD* get_jacobian();
+//	double get_arclen();
+//
+//private:
+//	TMatrixD* m_jacobian;
+//	double m_arclen;
+//};
+
 /**
  * A class for wrapping the millepede function call such that it can be called from
  * within a python script
@@ -34,18 +48,18 @@ public:
 					float measured_residual,
 					float sigma);
 
-	std::vector<double> list_hits(genfit::Track* track) const;
 	const int* labels() const;
-	//helper methods
-	TMatrixD* calc_jacobian(genfit::Track* track, const unsigned int hit_id_1, const unsigned int hit_id_2) const;
-	std::multimap<double,TMatrixD*> jacobians_with_arclength(genfit::Track* track) const;
+	double perform_GBL_refit(const genfit::Track& track) const;
 
-	ClassDef(MillepedeCaller,2);
+	ClassDef(MillepedeCaller,3);
 
 private:
 	Mille mille;
 
-
+	//helper methods
+	std::vector<gbl::GblPoint> list_hits(const genfit::Track* track) const;
+	TMatrixD* calc_jacobian(const genfit::Track* track, const unsigned int hit_id_1, const unsigned int hit_id_2) const;
+	std::multimap<double,TMatrixD*> jacobians_with_arclength(const genfit::Track* track) const;
 };
 
 #endif /* CHARMDET_MILLEPEDECALLER_H_ */

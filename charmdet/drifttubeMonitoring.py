@@ -2844,8 +2844,7 @@ def plotBiasedResiduals(nEvent=-1,nTot=1000,PR=1,onlyPlotting=False,minP=3.):
        timerStats['prepareTrack']+=timer.RealTime()
        timer.Start()
        print("Testing: Processing event number", Nr)
-       milleCaller.calc_jacobian(aTrack,1,2)
-       #milleCaller.list_hits(aTrack)
+       chi2_gbl = milleCaller.perform_GBL_refit(aTrack)
        """
        New calculation of residuals
        """

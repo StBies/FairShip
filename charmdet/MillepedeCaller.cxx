@@ -64,10 +64,10 @@ void MillepedeCaller::call_mille(int n_local_derivatives,
 }
 
 //TODO document
-vector<double> MillepedeCaller::list_hits(genfit::Track* track) const
+vector<gbl::GblPoint> MillepedeCaller::list_hits(const genfit::Track* track) const
 {
 	cout << "Now entering function: MillepedeCaller::list_hits" << endl;
-	//std::vector<gbl::GblPoint*> result = {};
+	std::vector<gbl::GblPoint> result = {};
 
 	size_t n_points = track->getNumPointsWithMeasurement();
 	vector<genfit::TrackPoint* > points = track->getPointsWithMeasurement();
@@ -77,10 +77,10 @@ vector<double> MillepedeCaller::list_hits(genfit::Track* track) const
 	for(auto it = jacobians_with_arclen.begin(); it != jacobians_with_arclen.end(); it++)
 	{
 		TMatrixD* jacobian = it->second;
-		//result.push_back(new gbl::GblPoint(*jacobian));
+		result.push_back(gbl::GblPoint(*jacobian));
 	}
 
-	return {42};
+	return result;
 }
 
 
@@ -111,7 +111,7 @@ const int* MillepedeCaller::labels() const
  * @warning Requires hit_id_1 = hit_id_2 - 1
  * @warning Requires hit_id_1 < track.getNumPointsWithMeasurement() && hit_id_2 < track.getNumPointsWithMeasurement()
  */
-TMatrixD* MillepedeCaller::calc_jacobian(genfit::Track* track, const unsigned int hit_id_1, const unsigned int hit_id_2) const
+TMatrixD* MillepedeCaller::calc_jacobian(const genfit::Track* track, const unsigned int hit_id_1, const unsigned int hit_id_2) const
 {
 	TMatrixD* jacobian = new TMatrixD(5,5);
 
@@ -159,7 +159,7 @@ TMatrixD* MillepedeCaller::calc_jacobian(genfit::Track* track, const unsigned in
 /**
  *
  */
-multimap<double,TMatrixD*> MillepedeCaller::jacobians_with_arclength(genfit::Track* track) const
+multimap<double,TMatrixD*> MillepedeCaller::jacobians_with_arclength(const genfit::Track* track) const
 {
 	multimap<double,TMatrixD*,less<double>> result;
 
@@ -202,4 +202,25 @@ multimap<double,TMatrixD*> MillepedeCaller::jacobians_with_arclength(genfit::Tra
 
 	//return a copy of the map. Since it's small it is probably better than handling memory and matrices are stored as pointers to heap
 	return result;
+}
+
+//TODO document
+/**
+ *
+ */
+double MillepedeCaller::perform_GBL_refit(const genfit::Track& track) const
+{
+	vector<gbl::GblPoint> points = list_hits(&track);
+	gbl::GblTrajectory traj(points);
+
+	int rc, ndf;
+	double chi2, lostWeight;
+
+	cout << "------------performing refit--------------" << endl;
+	cout << "Seed track chi2: " << track.getFitStatus().getChi2() << " Ndf: " << track.getFitStatus().getNdf() << endl;
+
+	rc = traj.fit(chi2,ndf,lostWeight);
+	cout << "Refit chi2: " << chi2 << " Ndf: " << ndf << endl;
+
+	return chi2;
 }
