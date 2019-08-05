@@ -20,7 +20,7 @@
  * @author Stefan Bieschke
  * @date Apr. 9, 2019
  */
-class MillepedeCaller: public TObject
+class MillepedeCaller//: public TObject
 {
 public:
 	MillepedeCaller(const char *outFileName, bool asBinary = true, bool writeZero = false);
