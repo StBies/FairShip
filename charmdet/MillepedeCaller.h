@@ -34,7 +34,7 @@ public:
 					float measured_residual,
 					float sigma);
 
-	std::vector<gbl::GblPoint> list_hits(genfit::Track* track) const;
+	std::vector<gbl::GblPoint*> list_hits(genfit::Track* track) const;
 	const int* labels() const;
 
 	ClassDef(MillepedeCaller,2);
