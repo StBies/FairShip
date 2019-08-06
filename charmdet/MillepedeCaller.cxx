@@ -63,7 +63,21 @@ void MillepedeCaller::call_mille(int n_local_derivatives,
 	mille.mille(n_local_derivatives,local_derivatives,n_global_derivatives,global_derivatives,label,measured_residual,sigma);
 }
 
-//TODO document
+/**
+ * List the hits used to fit the seed track from a fit predecessing the GBL fit as a @c std::vector<gbl::GblPoint>. The GblPoint objects will
+ * also contain measurements after the call of this method. The GBL points are ordered by arclength, which is the distance on the track between
+ * two consecutive hits.
+ *
+ * @brief List hits from seed track as vector<GblPoint>
+ *
+ * @author Stefan Bieschke
+ * @date Aug. 06, 2019
+ * @version 1.0
+ *
+ * @param track Seed track, in this case genfit::Track from Kalman fitter
+ *
+ * @return std::vector<gbl::GblPoint> containing the hits ordered by arclen with measurement added
+ */
 vector<gbl::GblPoint> MillepedeCaller::list_hits(const genfit::Track* track) const
 {
 	std::vector<gbl::GblPoint> result = {};
@@ -77,6 +91,7 @@ vector<gbl::GblPoint> MillepedeCaller::list_hits(const genfit::Track* track) con
 	for(auto it = jacobians_with_arclen.begin(); it != jacobians_with_arclen.end(); it++)
 	{
 		TMatrixD* jacobian = it->second;
+		//TODO test if the GblPoint constructor stores a copy so that original jacobian can be deleted
 		result.push_back(gbl::GblPoint(*jacobian));
 	}
 
@@ -84,7 +99,7 @@ vector<gbl::GblPoint> MillepedeCaller::list_hits(const genfit::Track* track) con
 }
 
 
-
+//TODO implement
 const int* MillepedeCaller::labels() const
 {
 	return new int[100];
@@ -174,7 +189,30 @@ multimap<double,TMatrixD*> MillepedeCaller::jacobians_with_arclength(const genfi
 	return result;
 }
 
-//TODO document - especially 0 < hit_id < max trackpoints
+/**
+ * Calculate the jacobian matrix for the transport of track parameters from the previous hit to a hit labelled by @c hit_id. Alongside
+ * the jacobian matrix, an arclength is calculated, which is the distance on the track between the previous hit and the hit specified by
+ * @c hit_id. Note that as the transport of parameters from the previous hit is calculated, the parameter @c hit_id is required to be
+ * greater than zero. See the requirements below for more details.
+ * The result is returned as std::pair<double,TMatrixD*>. The TMatrixD* pointer points to heap memory holding the 5x5 jacobian matrix.
+ * For more info on the jacobian see the documentation of the method
+ * @c calc_jacobian(const genfit::Track* track, const unsigned int hit_id_1, const unsigned int hit_id_2) const.
+ *
+ * @brief Calculate a single pair of jacobian with arclength for a given @c hit_id
+ *
+ * @author Stefan Bieschke
+ * @date Aug. 06, 2019
+ * @version 1.0
+ *
+ * @param track Seed track from a fit predecessing the GBL refit, e.g the genfit Kalman fitter
+ * @param hit_id ID (number) of the hit for that the pair shall be computed. See requirements below
+ *
+ * @require 0 < hit_id < track.getNumPointsWithMeasurement()
+ *
+ * @return std::pair<double,TMatrixD*> containing the the arclength and the jacobian matrix
+ *
+ * @warning TMatrixD* is heap memory and undeleted. Must be deleted by caller when no longer needed.
+ */
 pair<double,TMatrixD*> MillepedeCaller::single_jacobian_with_arclength(const genfit::Track& track, const unsigned int hit_id) const
 {
 	TVector3 fitted_pos_1 = track.getFittedState(hit_id - 1).getPos();
