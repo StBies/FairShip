@@ -60,7 +60,7 @@ private:
 	//helper methods
 	std::vector<gbl::GblPoint> list_hits(const genfit::Track* track) const;
 	TMatrixD* calc_jacobian(const genfit::Track* track, const unsigned int hit_id_1, const unsigned int hit_id_2) const;
-	std::pair<double,TMatrixD*> single_jacobian_with_arclength(const genfit::Track& track, const unsigned int hit_id_1, const unsigned int hit_id_2) const;
+	std::pair<double,TMatrixD*> single_jacobian_with_arclength(const genfit::Track& track, const unsigned int hit_id) const;
 	std::multimap<double,TMatrixD*> jacobians_with_arclength(const genfit::Track* track) const;
 	TVector3 calc_shortest_distance(const TVector3& wire_top, const TVector3& wire_bot, const TVector3& track_pos, const TVector3& track_mom) const;
 };

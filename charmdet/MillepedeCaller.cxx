@@ -125,7 +125,7 @@ vector<gbl::GblPoint> MillepedeCaller::list_hits(const genfit::Track* track) con
 		TMatrixD* jacobian = it->second.jacobian;
 		//TODO test if the GblPoint constructor stores a copy so that original jacobian can be deleted
 		result.push_back(gbl::GblPoint(*jacobian));
-		result.back().addMeasurement(it->second.rt_measurement);
+		//result.back().addMeasurement(it->second.rt_measurement);
 	}
 
 	return result;
