@@ -254,7 +254,7 @@ pair<double,TMatrixD*> MillepedeCaller::single_jacobian_with_arclength(const gen
 
 	double distance = between_hits.Mag();
 
-	TMatrixD* jacobian = calc_jacobian(track, hit_id - 1, hit_id);
+	TMatrixD* jacobian = calc_jacobian(&track, hit_id - 1, hit_id);
 
 	return make_pair(distance, jacobian);
 }
