@@ -82,17 +82,50 @@ vector<gbl::GblPoint> MillepedeCaller::list_hits(const genfit::Track* track) con
 {
 	std::vector<gbl::GblPoint> result = {};
 
-	size_t n_points = track->getNumPointsWithMeasurement();
 	vector<genfit::TrackPoint* > points = track->getPointsWithMeasurement();
+	size_t n_points = points.size();
 
+	//define a struct to handle track parameters at a certain point as well as measurement and residual
+	struct hit_info
+	{
+		TMatrixD* jacobian;
+		double rt_measurement;
+		TVector3 closest_approach;
+	};
+
+	multimap<double,struct hit_info,less<double>> jacobians_with_arclen;
+
+	//#pragma omp parallel for
+	for(size_t i = 1; i < n_points; i++)
+	{
+		struct hit_info hit;
+		genfit::TrackPoint* point = points[i];
+		//get coords of upper and lower end of hit tube
+		genfit::AbsMeasurement* raw_measurement = point->getRawMeasurement();
+		TVectorD raw = raw_measurement->getRawHitCoords();
+		TVector3 vbot(raw[0],raw[1],raw[2]);
+		TVector3 vtop(raw[3],raw[4],raw[5]);
+		double measurement = raw[6]; //rt
+
+		TVector3 fit_pos = track->getFittedState().getPos();
+		TVector3 fit_mom = track->getFittedState().getMom();
+		TVector3 closest_approach = calc_shortest_distance(vtop,vbot,fit_pos,fit_mom);
+		pair<double,TMatrixD*> jacobian_with_arclen = single_jacobian_with_arclength(*track,i);
+
+		//TODO check if this is copied to multimap correctly, especially the contained TVector3 as hit goes out of scope after loop iter.
+		hit.jacobian = jacobian_with_arclen.second;
+		hit.closest_approach = closest_approach;
+		hit.rt_measurement = measurement;
+		jacobians_with_arclen.insert(make_pair(jacobian_with_arclen.first,hit));
+	}
 	//TODO calculate measurements and add before sorting
-	multimap<double,TMatrixD*> jacobians_with_arclen = jacobians_with_arclength(track);
 
 	for(auto it = jacobians_with_arclen.begin(); it != jacobians_with_arclen.end(); it++)
 	{
-		TMatrixD* jacobian = it->second;
+		TMatrixD* jacobian = it->second.jacobian;
 		//TODO test if the GblPoint constructor stores a copy so that original jacobian can be deleted
 		result.push_back(gbl::GblPoint(*jacobian));
+		result.back().addMeasurement(it->second.rt_measurement);
 	}
 
 	return result;
