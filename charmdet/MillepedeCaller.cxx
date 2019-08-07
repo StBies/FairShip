@@ -110,6 +110,7 @@ vector<gbl::GblPoint> MillepedeCaller::list_hits(const genfit::Track* track) con
 		TVector3 fit_pos = track->getFittedState().getPos();
 		TVector3 fit_mom = track->getFittedState().getMom();
 		TVector3 closest_approach = calc_shortest_distance(vtop,vbot,fit_pos,fit_mom);
+		cout << "Closest approach for hit " << i << ": " << closest_approach.Mag() * (1. / 10.) << " mm" << endl;
 		pair<double,TMatrixD*> jacobian_with_arclen = single_jacobian_with_arclength(*track,i);
 
 		//hit struct seems to be copied correctly into multimap
@@ -310,8 +311,6 @@ TVector3 MillepedeCaller::calc_shortest_distance(const TVector3& wire_top, const
 
 	TVector3 PCA_on_track(track_pos + result[0] * track_mom);
 	TVector3 PCA_on_wire(wire_bot + result[1] * wire_dir);
-
-	cout << "Mag from c++: " << (PCA_on_track - PCA_on_wire).Mag() << endl;
 
 	return TVector3(PCA_on_track - PCA_on_wire);
 }
