@@ -105,14 +105,14 @@ vector<gbl::GblPoint> MillepedeCaller::list_hits(const genfit::Track* track) con
 		TVectorD raw = raw_measurement->getRawHitCoords();
 		TVector3 vbot(raw[0],raw[1],raw[2]);
 		TVector3 vtop(raw[3],raw[4],raw[5]);
-		double measurement = raw[6]; //rt
+		double measurement = raw[6]; //rt distance
 
 		TVector3 fit_pos = track->getFittedState().getPos();
 		TVector3 fit_mom = track->getFittedState().getMom();
 		TVector3 closest_approach = calc_shortest_distance(vtop,vbot,fit_pos,fit_mom);
 		pair<double,TMatrixD*> jacobian_with_arclen = single_jacobian_with_arclength(*track,i);
 
-		//TODO check if this is copied to multimap correctly, especially the contained TVector3 as hit goes out of scope after loop iter.
+		//hit struct seems to be copied correctly into multimap
 		hit.jacobian = jacobian_with_arclen.second;
 		hit.closest_approach = closest_approach;
 		hit.rt_measurement = measurement;
@@ -123,13 +123,6 @@ vector<gbl::GblPoint> MillepedeCaller::list_hits(const genfit::Track* track) con
 	for(auto it = jacobians_with_arclen.begin(); it != jacobians_with_arclen.end(); it++)
 	{
 		TMatrixD* jacobian = it->second.jacobian;
-		cout << "VCA' after passing around: " << endl;
-		cout << "VCA' = (";
-		for (char i = 0; i < 3; i++)
-		{
-			cout << it->second.closest_approach[i] << " ";
-		}
-		cout << ")" << endl;
 		//TODO test if the GblPoint constructor stores a copy so that original jacobian can be deleted
 		result.push_back(gbl::GblPoint(*jacobian));
 		//result.back().addMeasurement(it->second.rt_measurement);
@@ -318,13 +311,7 @@ TVector3 MillepedeCaller::calc_shortest_distance(const TVector3& wire_top, const
 	TVector3 PCA_on_track(track_pos + result[0] * track_mom);
 	TVector3 PCA_on_wire(wire_bot + result[1] * wire_dir);
 
-	cout << "Calculating vector of closest approach:" << endl;
-	cout << "VCA = (";
-	for(char i = 0; i < 3; i++)
-	{
-		cout << (PCA_on_track - PCA_on_wire)[i] << " ";
-	}
-	cout << ")" << endl;
+	cout << "Mag from c++: " << (PCA_on_track - PCA_on_wire).Mag() << endl;
 
 	return TVector3(PCA_on_track - PCA_on_wire);
 }
