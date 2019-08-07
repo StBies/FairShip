@@ -123,6 +123,13 @@ vector<gbl::GblPoint> MillepedeCaller::list_hits(const genfit::Track* track) con
 	for(auto it = jacobians_with_arclen.begin(); it != jacobians_with_arclen.end(); it++)
 	{
 		TMatrixD* jacobian = it->second.jacobian;
+		cout << "VCA' after passing around: " << endl;
+		cout << "VCA' = (";
+		for (char i = 0; i < 3; i++)
+		{
+			cout << it->second.closest_approach[i] << " ";
+		}
+		cout << ")" << endl;
 		//TODO test if the GblPoint constructor stores a copy so that original jacobian can be deleted
 		result.push_back(gbl::GblPoint(*jacobian));
 		//result.back().addMeasurement(it->second.rt_measurement);
@@ -310,6 +317,14 @@ TVector3 MillepedeCaller::calc_shortest_distance(const TVector3& wire_top, const
 
 	TVector3 PCA_on_track(track_pos + result[0] * track_mom);
 	TVector3 PCA_on_wire(wire_bot + result[1] * wire_dir);
+
+	cout << "Calculating vector of closest approach:" << endl;
+	cout << "VCA = (";
+	for(char i = 0; i < 3; i++)
+	{
+		cout << (PCA_on_track - PCA_on_wire)[i] << " ";
+	}
+	cout << ")" << endl;
 
 	return TVector3(PCA_on_track - PCA_on_wire);
 }
