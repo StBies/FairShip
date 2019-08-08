@@ -40,7 +40,7 @@ class DriftTube(DetElement):
         
         #TODO: Read length from TGeo
         if(int(detId / 10000000) < 3):
-            self._length = 100 * u.cm
+            self._length = 110 * u.cm
         else:
             self._length = 160 * u.cm
             
