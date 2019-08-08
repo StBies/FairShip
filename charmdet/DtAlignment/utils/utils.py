@@ -246,6 +246,7 @@ def calculate_residuals(track,dtmodules,module_residuals):
         """
         vec_between_PCA = measurement_vector(tube, mom, pos)
         print("Hit: {}\tdist: {}\t Abs(vec): {}".format(i,dist,vec_between_PCA.Mag()))
+        print("Hit ID: {} Det ID: {}".format(raw_measurement.getHitId(),raw_measurement.getDetId()))
         # 6.) Calculate residual and append to correct entry in dictionary
         residual = dist - rt_dist
         module_residuals[module_id['module']].append(residual)
