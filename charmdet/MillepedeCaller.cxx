@@ -117,9 +117,7 @@ vector<gbl::GblPoint> MillepedeCaller::list_hits(const genfit::Track* track) con
 		cout << "Fitpos = (" << fit_pos[0] << ", " << fit_pos[1] << ", " << fit_pos[2] << ")" << endl;
 		cout << "Fitmom = (" << fit_mom[0] << ", " << fit_mom[1] << ", " << fit_mom[2] << ")" << endl;
 		cout << "CA for hit " << i << ": " << closest_approach.Mag() << ", rt = " << measurement << endl;
-		cout << "# Raw measurements: " << point->getNumRawMeasurements() << endl;
-		cout << "Genfit hit id = " << raw_measurement->getHitId() << endl;
-		cout << "Genfit det id = " << raw_measurement->getHitId() << endl;
+		cout << "Genfit det id = " << raw_measurement->getDetId() << endl;
 		pair<double,TMatrixD*> jacobian_with_arclen = single_jacobian_with_arclength(*track,i);
 
 		//hit struct seems to be copied correctly into multimap
