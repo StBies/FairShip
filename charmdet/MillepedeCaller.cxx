@@ -107,8 +107,8 @@ vector<gbl::GblPoint> MillepedeCaller::list_hits(const genfit::Track* track) con
 		TVector3 vtop(raw[3],raw[4],raw[5]);
 		double measurement = raw[6]; //rt distance
 
-		TVector3 fit_pos = track->getFittedState().getPos();
-		TVector3 fit_mom = track->getFittedState().getMom();
+		TVector3 fit_pos = track->getFittedState(i).getPos();
+		TVector3 fit_mom = track->getFittedState(i).getMom();
 		TVector3 closest_approach = calc_shortest_distance(vtop,vbot,fit_pos,fit_mom);
 		//DEBUGGING
 		cout << "---------C++ hit info---------------" << endl;
