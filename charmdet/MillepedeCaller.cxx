@@ -112,7 +112,12 @@ vector<gbl::GblPoint> MillepedeCaller::list_hits(const genfit::Track* track) con
 		TVector3 closest_approach = calc_shortest_distance(vtop,vbot,fit_pos,fit_mom);
 		//DEBUGGING
 		cout << "---------C++ hit info---------------" << endl;
+		cout << "Vtop = (" << vtop[0] << ", " << vtop[1] << ", " << vtop[2] << ")" << endl;
+		cout << "Vbot = (" << vbot[0] << ", " << vbot[1] << ", " << vbot[2] << ")" << endl;
+		cout << "Fitpos = (" << fit_pos[0] << ", " << fit_pos[1] << ", " << fit_pos[2] << ")" << endl;
+		cout << "Fitmom = (" << fit_mom[0] << ", " << fit_mom[1] << ", " << fit_mom[2] << ")" << endl;
 		cout << "CA for hit " << i << ": " << closest_approach.Mag() << ", rt = " << measurement << endl;
+		cout << "# Raw measurements: " << point->getNumRawMeasurements() << endl;
 		cout << "Genfit hit id = " << raw_measurement->getHitId() << endl;
 		cout << "Genfit det id = " << raw_measurement->getHitId() << endl;
 		pair<double,TMatrixD*> jacobian_with_arclen = single_jacobian_with_arclength(*track,i);

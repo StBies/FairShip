@@ -2843,6 +2843,9 @@ def plotBiasedResiduals(nEvent=-1,nTot=1000,PR=1,onlyPlotting=False,minP=3.):
        rc = h['biasResTrackMom'].Fill(sta.getMomMag())
        timerStats['prepareTrack']+=timer.RealTime()
        timer.Start()
+       """
+       refit
+       """
        print("Testing: Processing event number", Nr)
        chi2_gbl = milleCaller.perform_GBL_refit(aTrack)
        """
