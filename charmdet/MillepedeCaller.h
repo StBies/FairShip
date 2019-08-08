@@ -13,6 +13,7 @@
 #include <map>
 #include "TVector3.h"
 #include "TDecompLU.h"
+#include "TRotation.h"
 
 //class JacobianWithArclen
 //{
@@ -63,6 +64,7 @@ private:
 	std::pair<double,TMatrixD*> single_jacobian_with_arclength(const genfit::Track& track, const unsigned int hit_id) const;
 	std::multimap<double,TMatrixD*> jacobians_with_arclength(const genfit::Track* track) const;
 	TVector3 calc_shortest_distance(const TVector3& wire_top, const TVector3& wire_bot, const TVector3& track_pos, const TVector3& track_mom) const;
+	TRotation calc_rotation_of_vector(const TVector3& v) const;
 };
 
 #endif /* CHARMDET_MILLEPEDECALLER_H_ */

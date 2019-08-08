@@ -321,3 +321,16 @@ TVector3 MillepedeCaller::calc_shortest_distance(const TVector3& wire_top, const
 
 	return TVector3(PCA_on_track - PCA_on_wire);
 }
+
+//TODO finish implementing
+TRotation MillepedeCaller::calc_rotation_of_vector(const TVector3& v) const
+{
+	TRotation rot;
+
+	TVector3 unity_x(1,0,0), unity_y(0,1,0), unity_z(0,0,1);
+	double angle_to_x = v.Angle(unity_x);
+	double angle_to_y = v.Angle(unity_y);
+	double angle_to_z = v.Angle(unity_z);
+
+	return rot;
+}
