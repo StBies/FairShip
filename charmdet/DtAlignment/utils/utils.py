@@ -133,12 +133,12 @@ def distance_to_wire(tube,mom=None,pos=None):
     Returns
     -------
     float
-        Closest distance between track and wire in mm
+        Closest distance between track and wire
     """
     vtop,vbot = tube.wire_end_positions()    
     normal_vector = mom.Cross(vtop-vbot)
     vec_any_two_points = vbot - pos #a vector from any point on one of the straight lines to any point on the other straight
-    distance = (abs(vec_any_two_points.Dot(normal_vector)) / normal_vector.Mag()) * u.mm
+    distance = (abs(vec_any_two_points.Dot(normal_vector)) / normal_vector.Mag())
 
     return distance
 
@@ -193,7 +193,7 @@ def measurement_vector(tube,mom,pos):
     PCA_on_track = TVector3(pos + result[0] * mom)
     PCA_on_wire = TVector3(vbot + result[1] * wire_dir)
     
-    return TVector3(u.mm * (PCA_on_track - PCA_on_wire))
+    return TVector3(PCA_on_track - PCA_on_wire)
     
 
 def calculate_residuals(track,dtmodules,module_residuals):
