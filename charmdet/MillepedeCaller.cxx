@@ -110,16 +110,6 @@ vector<gbl::GblPoint> MillepedeCaller::list_hits(const genfit::Track* track) con
 		TVector3 fit_pos = track->getFittedState(i).getPos();
 		TVector3 fit_mom = track->getFittedState(i).getMom();
 		TVector3 closest_approach = calc_shortest_distance(vtop,vbot,fit_pos,fit_mom);
-		//DEBUGGING
-		cout << "---------C++ hit info---------------" << endl;
-		cout << "Vtop = (" << vtop[0] << ", " << vtop[1] << ", " << vtop[2] << ")" << endl;
-		cout << "Vbot = (" << vbot[0] << ", " << vbot[1] << ", " << vbot[2] << ")" << endl;
-		cout << "Fitpos = (" << fit_pos[0] << ", " << fit_pos[1] << ", " << fit_pos[2] << ")" << endl;
-		cout << "Fitmom = (" << fit_mom[0] << ", " << fit_mom[1] << ", " << fit_mom[2] << ")" << endl;
-		cout << "CA for hit " << i << ": " << closest_approach.Mag() << ", rt = " << measurement << endl;
-		cout << "Genfit det id = " << raw_measurement->getDetId() << endl;
-		cout << "Measurement rotation info:" << endl;
-		TRotation rot = calc_rotation_of_vector(closest_approach);
 		pair<double,TMatrixD*> jacobian_with_arclen = single_jacobian_with_arclength(*track,i);
 
 		//hit struct seems to be copied correctly into multimap
@@ -135,7 +125,15 @@ vector<gbl::GblPoint> MillepedeCaller::list_hits(const genfit::Track* track) con
 		TMatrixD* jacobian = it->second.jacobian;
 		//TODO test if the GblPoint constructor stores a copy so that original jacobian can be deleted
 		result.push_back(gbl::GblPoint(*jacobian));
-		//result.back().addMeasurement(it->second.rt_measurement);
+		TRotation rot = calc_rotation_of_vector(it->second.closest_approach);
+		TMatrixD rot_mat = rot_to_matrix(rot);
+		TVecotrD rotated_residual(3);
+		rotated_residuals[0] = it->second.closest_approach - it->second.rt_measurement;
+		rotated_residuals[1] = 0;
+		rotated_residuals[2] = 0;
+		TVectorD precision(rotated_residuals);
+		precision[0] = 250 * 1e-4; //250 um in cm
+		result.back().addMeasurement(rot_mat,rotated_residual,precision);
 	}
 
 	return result;
@@ -175,9 +173,9 @@ TMatrixD* MillepedeCaller::calc_jacobian(const genfit::Track* track, const unsig
 	TMatrixD* jacobian = new TMatrixD(5,5);
 
 	// 1.) init unity matrix
-	for(unsigned int row = 0; row < jacobian->GetNrows(); row++)
+	for(uint8_t row = 0; row < jacobian->GetNrows(); row++)
 	{
-		for(unsigned int col = 0; col < jacobian->GetNcols(); col++)
+		for(uint8_t col = 0; col < jacobian->GetNcols(); col++)
 		{
 			if(row == col)
 			{
@@ -324,58 +322,36 @@ TVector3 MillepedeCaller::calc_shortest_distance(const TVector3& wire_top, const
 	return TVector3(PCA_on_track - PCA_on_wire);
 }
 
-//TODO finish implementing
+/**
+ * Calculate the rotation matrix in a way such that a given vector v is the x-axis of the rotated coordinate frame.
+ *
+ * @brief Rotation of a given vector in lab frame so that it is new x axis
+ *
+ * @author Stefan Bieschke
+ * @date Aug. 09, 2019
+ * @version 1.0
+ *
+ * @param v TVector3 that is meant to be the new x axis of the rotated coordinate frame
+ *
+ * @return TRotation containing the rotation matrix
+ */
 TRotation MillepedeCaller::calc_rotation_of_vector(const TVector3& v) const
 {
 	TRotation rot;
-
-	TVector3 unity_x(1,0,0), unity_y(0,1,0), unity_z(0,0,1);
-//	double angle_to_x = v.Angle(unity_x);
-//	double angle_to_y = v.Angle(unity_y);
-//	double angle_to_z = v.Angle(unity_z);
-//
-//	rot.RotateY(angle_to_x);
-//	rot.RotateX(angle_to_y);
 	rot.SetXAxis(v);
 
-	//Testing output
-	cout << "Original vector: " << endl;
-	cout << "v = (";
-	for(char i = 0; i < 3; i++)
-	{
-		cout << v[i] << "\t";
-	}
-	cout << ")" << endl;
-
-	cout << "Rotation: " << endl;
-	for(char i = 0; i < 3; i++)
-	{
-		for(char j = 0; j < 3; j++)
-		{
-			cout << rot[i][j] << "\t";
-		}
-		cout << endl;
-	}
-
-	cout << "Rotated vector:" << endl;
-//	TVector3 v_rot = rot.Inverse() * v;
-	TVector3 v_rot(v.Mag(),0,0);
-	cout << "v_rot = (";
-	for (char i = 0; i < 3; i++)
-	{
-		cout << v_rot[i] << "\t";
-	}
-	cout << ")" << endl;
-
-	TVector3 v_backrot = rot * v_rot;
-
-	cout << "backrotated vector:" << endl;
-	cout << "v_backrot = (";
-	for (char i = 0; i < 3; i++)
-	{
-		cout << v_backrot[i] << "\t";
-	}
-	cout << ")" << endl;
-
 	return rot;
+}
+
+TMatrixD MillepedeCaller::rot_to_matrix(const TRotation& rot) const
+{
+	TMatrixD result(3,3);
+	for(uint8_t i = 0; i < 3; i++)
+	{
+		for(uint8_t j = 0; j < 3; j++)
+		{
+			result[i][j] = rot[i][j];
+		}
+	}
+	return result;
 }
