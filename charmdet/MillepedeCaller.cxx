@@ -127,7 +127,7 @@ vector<gbl::GblPoint> MillepedeCaller::list_hits(const genfit::Track* track) con
 		result.push_back(gbl::GblPoint(*jacobian));
 		TRotation rot = calc_rotation_of_vector(it->second.closest_approach);
 		TMatrixD rot_mat = rot_to_matrix(rot);
-		TVecotrD rotated_residual(3);
+		TVectorD rotated_residual(3);
 		rotated_residual[0] = it->second.closest_approach.Mag() - it->second.rt_measurement;
 		rotated_residual[1] = 0;
 		rotated_residual[2] = 0;

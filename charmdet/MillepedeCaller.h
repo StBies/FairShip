@@ -10,6 +10,7 @@
 #include "MilleBinary.h"
 #include "Track.h"
 #include "TMatrixD.h"
+#include "TVectorD.h"
 #include <map>
 #include "TVector3.h"
 #include "TDecompLU.h"
