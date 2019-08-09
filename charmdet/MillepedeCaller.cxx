@@ -133,7 +133,7 @@ vector<gbl::GblPoint> MillepedeCaller::list_hits(const genfit::Track* track) con
 		rotated_residuals[2] = 0;
 		TVectorD precision(rotated_residuals);
 		precision[0] = 250 * 1e-4; //250 um in cm
-		result.back().addMeasurement(rot_mat,rotated_residual,precision);
+		result.back().addMeasurement(rot_mat,rotated_residuals,precision);
 	}
 
 	return result;
