@@ -369,7 +369,6 @@ TRotation MillepedeCaller::calc_rotation_of_vector(const TVector3& v) const
 	TVector3 v_backrot = rot.Inverse() * v_rot;
 
 	cout << "backrotated vector:" << endl;
-	TVector3 v_rot = rot * v;
 	cout << "v_backrot = (";
 	for (char i = 0; i < 3; i++)
 	{
