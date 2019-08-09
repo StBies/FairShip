@@ -241,18 +241,6 @@ def calculate_residuals(track,dtmodules,module_residuals):
         
         # 5.) Calculate distance of track to wire
         dist = distance_to_wire(tube, mom, pos)
-        """
-        Testing for consistency
-        """
-        vtop, vbot = tube.wire_end_positions()
-        vec_between_PCA = measurement_vector(tube, mom, pos)
-        print("---------python hit info---------------")
-        print("Vtop = ({}, {}, {})".format(vtop[0],vtop[1],vtop[2]))
-        print("Vbot = ({}, {}, {})".format(vbot[0],vbot[1],vbot[2]))
-        print("Fitpos =  ({}, {}, {})".format(pos[0],pos[1],pos[2]))
-        print("Fitmom =  ({}, {}, {})".format(mom[0],mom[1],mom[2]))
-        print("Hit: {}\tdist: {}\t Abs(vec): {}".format(i,dist,vec_between_PCA.Mag()))
-        print("Hit ID: {} Det ID: {}".format(raw_measurement.getHitId(),raw_measurement.getDetId()))
         # 6.) Calculate residual and append to correct entry in dictionary
         residual = dist - rt_dist
         module_residuals[module_id['module']].append(residual)

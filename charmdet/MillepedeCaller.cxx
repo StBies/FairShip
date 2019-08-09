@@ -105,7 +105,7 @@ vector<gbl::GblPoint> MillepedeCaller::list_hits(const genfit::Track* track) con
 		TVectorD raw = raw_measurement->getRawHitCoords();
 		TVector3 vbot(raw[0],raw[1],raw[2]);
 		TVector3 vtop(raw[3],raw[4],raw[5]);
-		double measurement = raw[6]; //rt distance
+		double measurement = raw[6]; //rt distance [cm]
 
 		TVector3 fit_pos = track->getFittedState(i).getPos();
 		TVector3 fit_mom = track->getFittedState(i).getMom();
@@ -118,7 +118,7 @@ vector<gbl::GblPoint> MillepedeCaller::list_hits(const genfit::Track* track) con
 		hit.rt_measurement = measurement;
 		jacobians_with_arclen.insert(make_pair(jacobian_with_arclen.first,hit));
 	}
-	//TODO calculate measurements and add before sorting
+	//TODO calculate GBLpoint for hit no. 0
 
 	for(auto it = jacobians_with_arclen.begin(); it != jacobians_with_arclen.end(); it++)
 	{
@@ -127,6 +127,7 @@ vector<gbl::GblPoint> MillepedeCaller::list_hits(const genfit::Track* track) con
 		result.push_back(gbl::GblPoint(*jacobian));
 		TRotation rot = calc_rotation_of_vector(it->second.closest_approach);
 		TMatrixD rot_mat = rot_to_matrix(rot);
+		//TODO fix, fit not working
 		TVectorD rotated_residual(3);
 		rotated_residual[0] = it->second.closest_approach.Mag() - it->second.rt_measurement;
 		rotated_residual[1] = 0;
