@@ -118,6 +118,8 @@ vector<gbl::GblPoint> MillepedeCaller::list_hits(const genfit::Track* track) con
 		cout << "Fitmom = (" << fit_mom[0] << ", " << fit_mom[1] << ", " << fit_mom[2] << ")" << endl;
 		cout << "CA for hit " << i << ": " << closest_approach.Mag() << ", rt = " << measurement << endl;
 		cout << "Genfit det id = " << raw_measurement->getDetId() << endl;
+		cout << "Measurement rotation info:" << endl;
+		TRotation rot = calc_rotation_of_vector(closest_approach);
 		pair<double,TMatrixD*> jacobian_with_arclen = single_jacobian_with_arclength(*track,i);
 
 		//hit struct seems to be copied correctly into multimap
@@ -328,9 +330,52 @@ TRotation MillepedeCaller::calc_rotation_of_vector(const TVector3& v) const
 	TRotation rot;
 
 	TVector3 unity_x(1,0,0), unity_y(0,1,0), unity_z(0,0,1);
-	double angle_to_x = v.Angle(unity_x);
-	double angle_to_y = v.Angle(unity_y);
-	double angle_to_z = v.Angle(unity_z);
+//	double angle_to_x = v.Angle(unity_x);
+//	double angle_to_y = v.Angle(unity_y);
+//	double angle_to_z = v.Angle(unity_z);
+//
+//	rot.RotateY(angle_to_x);
+//	rot.RotateX(angle_to_y);
+	rot.SetXAxis(v);
+
+	//Testing output
+	cout << "Original vector: " << endl;
+	cout << "v = (";
+	for(char i = 0; i < 3; i++)
+	{
+		cout << v[i] << "\t";
+	}
+	cout << ")" << endl;
+
+	cout << "Rotation: " << endl;
+	for(char i = 0; i < 3; i++)
+	{
+		for(char j = 0; j < 3; j++)
+		{
+			cout << rot[i][j] << "\t";
+		}
+		cout << endl;
+	}
+
+	cout << "Rotated vector:" << endl;
+	TVector3 v_rot = rot * v;
+	cout << "v_rot = (";
+	for (char i = 0; i < 3; i++)
+	{
+		cout << v_rot[i] << "\t";
+	}
+	cout << ")" << endl;
+
+	TVector3 v_backrot = rot.Inverse() * v_rot;
+
+	cout << "backrotated vector:" << endl;
+	TVector3 v_rot = rot * v;
+	cout << "v_backrot = (";
+	for (char i = 0; i < 3; i++)
+	{
+		cout << v_backrot[i] << "\t";
+	}
+	cout << ")" << endl;
 
 	return rot;
 }
