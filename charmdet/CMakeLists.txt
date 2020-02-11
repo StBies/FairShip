@@ -51,6 +51,7 @@ ShipPixelHit.cxx
 ReProcessAbsorber.cxx
 RPCTrack.cxx
 MufluxReco.cxx
+GblSeedTrack.cpp
 MillepedeCaller.cxx
 )
 
