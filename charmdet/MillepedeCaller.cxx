@@ -554,31 +554,7 @@ double MillepedeCaller::MC_GBL_refit(unsigned int n_tracks, double smearing_sigm
 
 //		tracks[i] = MC_gen_track();
 	}
-//	TH1D slopes("slopes","slope distribution",200,min_slope -0.1 * min_slope,max_slope + 0.1 * max_slope);
-//	for(auto track: tracks)
-//	{
-//		double slope = track[1][0] / track[1][2];
-//		slopes.Fill(slope);
-//	}
-//	TH1D sampling_probability(slopes);
-//	sampling_probability.SetNameTitle("prob", "sampling probability");
-//	unsigned int mean_bin_content = (int)(0.01 * slopes[slopes.GetMaximumBin()]); //10 percent of maximum bin content of unsampled slope dist
-//	cout << "Resampling with " << mean_bin_content << " tracks per bin in average" << endl;
-//	for(size_t i = 0; i < slopes.GetNbinsX(); ++i)
-//	{
-//		sampling_probability[i] = mean_bin_content / slopes[i];
-//	}
-//	uniform_real_distribution<double> uniform(0,1);
-//	for(auto track: tracks)
-//	{
-//		double p = uniform(m_mersenne_twister);
-//		double slope = track[1][0] / track[1][2];
-//		int bin = sampling_probability.FindBin(slope);
-//		if(p < sampling_probability[bin])
-//		{
-//			sampled_tracks.push_back(track);
-//		}
-//	}
+
 //	slopes.Draw("slope_dist.pdf");
 //	sampling_probability.Draw("sampling_prob.pdf");
 //
@@ -1070,6 +1046,52 @@ vector<TVector3> MillepedeCaller::MC_gen_track_boosted()
 	vector<TVector3> result = {beginning, end};
 //	cout << "Beg: (" << beginning[0] << "," << beginning[1] << "," << beginning[2] << ")"
 //					<< "End : (" << end[0] << "," << end[1] << "," << end[2] << ")" << endl;
+	return result;
+}
+
+
+vector<TVector3> MillepedeCaller::resample_tracks(const vector<TVector3>& tracks) const
+{
+	vector<TVector3> result = {};
+	result.reserve(tracks.size());
+
+	//find min and max slope to define borders of probability histogram
+	double min_slope = 100;
+	double max_slope = -100;
+	for(size_t i = 0; i < tracks.size(); ++i)
+	{
+		double slope_x = tracks[1][0] / tracks[1][2];
+		min_slope = slope_x < min_slope ? slope_x : min_slope;
+		max_slope = slope_x > max_slope ? slope_x : max_slope;
+	}
+
+	TH1D slopes("slopes","slope distribution",200, 1.1 * min_slope, 1.1 * max_slope);
+	for(auto track: tracks)
+	{
+		double slope = track[1][0] / track[1][2];
+		slopes.Fill(slope);
+	}
+	TH1D sampling_probability(slopes);
+	sampling_probability.SetNameTitle("prob", "sampling probability");
+	unsigned int mean_bin_content = (int)(0.01 * slopes[slopes.GetMaximumBin()]); //10 percent of maximum bin content of unsampled slope dist
+	cout << "Resampling with " << mean_bin_content << " tracks per bin in average" << endl;
+	for(size_t i = 0; i < slopes.GetNbinsX(); ++i)
+	{
+		sampling_probability[i] = mean_bin_content / slopes[i];
+	}
+	uniform_real_distribution<double> uniform(0,1);
+	for(auto track: tracks)
+	{
+		double p = uniform(m_mersenne_twister);
+		double slope = track[1][0] / track[1][2];
+		int bin = sampling_probability.FindBin(slope);
+		if(p < sampling_probability[bin])
+		{
+			result.push_back(track);
+		}
+	}
+	result.shrink_to_fit();
+
 	return result;
 }
 
