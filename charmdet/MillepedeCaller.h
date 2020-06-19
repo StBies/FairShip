@@ -110,7 +110,7 @@ private:
 	 */
 	std::vector<TVector3> MC_gen_track();
 	std::vector<TVector3> MC_gen_track_boosted();
-	std::vector<TVector3> resample_tracks(const std::vector<TVector3>& tracks) const;
+	std::vector<std::vector<TVector3>> resample_tracks(const std::vector<std::vector<TVector3>>& tracks) const;
 	std::vector<std::pair<int,double>> MC_gen_clean_hits(const TVector3& start, const TVector3& direction, const std::vector<int>* shifted_det_ids = nullptr);
 	void smear_hits(std::vector<std::pair<int,double>>& unsmeared, const double sigma);
 	TMatrixD* calc_jacobian(const TVector3& PCA_1, const TVector3& PCA_2) const;

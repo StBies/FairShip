@@ -538,31 +538,18 @@ double MillepedeCaller::MC_GBL_refit(unsigned int n_tracks, double smearing_sigm
 	double chi2, lostweight;
 	int ndf;
 	vector<vector<TVector3>> tracks(n_tracks);
-//	vector<vector<TVector3>> sampled_tracks(0);
-//	sampled_tracks.reserve(n_tracks);
-	double min_slope = 100;
-	double max_slope = -100;
+
 	for(unsigned int i = 0; i < n_tracks; ++i)
 	{
 		//case for boosted tracks
 		tracks[i] = MC_gen_track_boosted();
-		//resampling to generate more homogeneous distribution of slopes
-		//find min and max slope in x:
-//		double slope_x = tracks[i][1][0] / tracks[i][1][2];
-//		min_slope = slope_x < min_slope ? slope_x : min_slope;
-//		max_slope = slope_x > max_slope ? slope_x : max_slope;
-
 //		tracks[i] = MC_gen_track();
 	}
 
-//	slopes.Draw("slope_dist.pdf");
-//	sampling_probability.Draw("sampling_prob.pdf");
-//
-//	sampled_tracks.shrink_to_fit();
-//	cout << "original sample size: " << tracks.size() << ", sampled size: " << sampled_tracks.size() << endl;
+
 	ofstream file("MC_slopes.txt");
 //
-//	//use resampled tracks with different spectral shape
+//	vector<vector<TVector3>> sampled_tracks = resample_tracks(tracks);
 //	tracks = sampled_tracks;
 
 
@@ -1050,9 +1037,9 @@ vector<TVector3> MillepedeCaller::MC_gen_track_boosted()
 }
 
 
-vector<TVector3> MillepedeCaller::resample_tracks(const vector<TVector3>& tracks) const
+vector<vector<TVector3>> MillepedeCaller::resample_tracks(const vector<vector<TVector3>>& tracks) const
 {
-	vector<TVector3> result = {};
+	vector<vector<TVector3>> result = {};
 	result.reserve(tracks.size());
 
 	//find min and max slope to define borders of probability histogram
