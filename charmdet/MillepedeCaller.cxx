@@ -1048,7 +1048,7 @@ vector<vector<TVector3>> MillepedeCaller::resample_tracks(const vector<vector<TV
 	double max_slope = -100;
 	for(size_t i = 0; i < tracks.size(); ++i)
 	{
-		double slope_x = tracks[1][0] / tracks[1][2];
+		double slope_x = tracks[i][1][0] / tracks[i][1][2];
 		min_slope = slope_x < min_slope ? slope_x : min_slope;
 		max_slope = slope_x > max_slope ? slope_x : max_slope;
 	}
