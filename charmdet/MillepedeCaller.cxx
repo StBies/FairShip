@@ -1068,7 +1068,7 @@ vector<vector<TVector3>> MillepedeCaller::resample_tracks(const vector<vector<TV
 		sampling_probability[i] = mean_bin_content / slopes[i];
 	}
 	uniform_real_distribution<double> uniform(0,1);
-	for(auto track: tracks)
+	for(vector<TVector3> track: tracks)
 	{
 		double p = uniform(m_mersenne_twister);
 		double slope = track[1][0] / track[1][2];
