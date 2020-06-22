@@ -2350,10 +2350,10 @@ def fitTrack(hitlist,Pstart=3.,pede_corrections = None):
             x_corr = 0
             z_corr = 0
             for entry in pede_corrections:
-                if entry[0] % 10 > 3: continue #first only translations
+                if entry[0] % 10 > 1: continue #first only translations
                 if entry[0] in corr_labels:
-                    if entry[0] % 10 == 1: x_corr = -entry[1]
-                    elif entry[0] % 10 == 3: z_corr = -entry[1]
+                    if entry[0] % 10 == 1: x_corr = entry[1]
+#                     elif entry[0] % 10 == 3: z_corr = -entry[1]
             vbot, vtop = apply_pede_corrections(vbot, vtop, x_corr, z_corr, 0, 0, 0)
         s,v,p,l,view,channelID,tdcId,nRT = stationInfo(hit)
         distance = 0
