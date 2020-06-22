@@ -1038,7 +1038,7 @@ vector<TVector3> MillepedeCaller::MC_gen_track_boosted()
 }
 
 
-vector<vector<TVector3>> MillepedeCaller::resample_tracks(const vector<vector<TVector3>>& tracks) const
+vector<vector<TVector3>> MillepedeCaller::resample_tracks(const vector<vector<TVector3>>& tracks)
 {
 	vector<vector<TVector3>> result = {};
 	result.reserve(tracks.size());
