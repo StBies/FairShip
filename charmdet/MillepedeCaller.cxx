@@ -509,6 +509,7 @@ gbl::GblTrajectory MillepedeCaller::perform_GBL_refit(const GBL_seed_track& trac
 	cout << "Refit chi2: " << chi2 << " Ndf: " << ndf << endl;
 	cout << "Prob: " << TMath::Prob(chi2,ndf) << endl;
 	print_fitted_residuals(traj);
+	print_fitted_track(traj);
 
 	return traj;
 }
