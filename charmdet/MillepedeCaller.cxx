@@ -558,8 +558,8 @@ double MillepedeCaller::MC_GBL_refit(unsigned int n_tracks, double smearing_sigm
 
 	ofstream file("MC_slopes.txt");
 //
-//	vector<vector<TVector3>> sampled_tracks = resample_tracks(tracks);
-//	tracks = sampled_tracks;
+	vector<vector<TVector3>> sampled_tracks = resample_tracks(tracks);
+	tracks = sampled_tracks;
 
 
 	unsigned int fitted = 0;
@@ -1101,7 +1101,7 @@ vector<vector<TVector3>> MillepedeCaller::resample_tracks(const vector<vector<TV
 	}
 	TH1D sampling_probability(slopes);
 	sampling_probability.SetNameTitle("prob", "sampling probability");
-	unsigned int mean_bin_content = (int)(0.01 * slopes[slopes.GetMaximumBin()]); //10 percent of maximum bin content of unsampled slope dist
+	unsigned int mean_bin_content = (int)(0.1 * slopes[slopes.GetMaximumBin()]); //10 percent of maximum bin content of unsampled slope dist
 	cout << "Resampling with " << mean_bin_content << " tracks per bin in average" << endl;
 	for(size_t i = 0; i < slopes.GetNbinsX(); ++i)
 	{
