@@ -1119,6 +1119,16 @@ vector<vector<TVector3>> MillepedeCaller::resample_tracks(const vector<vector<TV
 		}
 	}
 	result.shrink_to_fit();
+	for(size_t i = 0; i < sampling_probability.GetNbinsX(); ++i)
+	{
+		cout << "Sampling prob: " << sampling_probability.GetBinCenter(i) << "\t" << sampling_probability[i] << endl;
+	}
+	for(size_t i = 0; i < result.size(); ++i)
+	{
+		vector<TVector3> track = result[i];
+		double slope = track[1][0] / track[1][2];
+		cout << "resampled slope: " << slope << endl;
+	}
 
 	return result;
 }
