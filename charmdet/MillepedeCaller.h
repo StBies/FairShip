@@ -69,6 +69,7 @@ private:
 	TFile* m_output_file;
 	TTree* m_output_tree;
 	MufluxSpectrometerDTSurvey m_survey;
+	TTree* m_efficiency_tree;
 
 	//helper methods
 	std::vector<gbl::GblPoint> list_hits(const GBL_seed_track* track, const alignment_mode& mode, double sigma_spatial, std::map<int,double>* pede_corrections = nullptr, TTree* tree = nullptr);
@@ -103,6 +104,7 @@ private:
 	void print_seed_hits(const genfit::Track& track) const;
 	void print_fitted_residuals(gbl::GblTrajectory& trajectory) const;
 	void print_fitted_track(gbl::GblTrajectory& trajectory) const;
+	void check_efficiency(const GBL_seed_track& seed);
 
 
 	/*

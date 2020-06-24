@@ -27,6 +27,11 @@ MillepedeCaller::MillepedeCaller(const char* out_file_name)
 	m_output_tree = create_output_tree();
 	m_survey.Init();
 
+	m_efficiency_tree = new TTree("Efficiency","Tree with info about efficiency as function of hit radius");
+	double track_distance;
+	Bool_t hit;
+	m_efficiency_tree->Branch("trackDistance",&track_distance,"trackDistance/D");
+	m_efficiency_tree->Branch("hasHit",&hit,"hasHit/O");
 
 	m_modules["T1U"] = {};
 	m_modules["T2V"] = {};
@@ -128,6 +133,7 @@ MillepedeCaller::~MillepedeCaller()
 	delete m_gbl_mille_binary;
 	m_output_file->cd();
 	m_output_tree->Write();
+	m_efficiency_tree->Write();
 	m_output_file->Write();
 	m_output_file->Close();
 }
@@ -200,7 +206,7 @@ std::vector<gbl::GblPoint> MillepedeCaller::list_hits(const GBL_seed_track* trac
 		//}
 
 
-		closest_approach = calc_shortest_distance(vtop,vbot,linear_model[0],linear_model[1],&PCA_wire,&PCA_track);
+		closest_approach = calc_shortest_distance(vtop,vbot,track->get_position(),track->get_direction(),&PCA_wire,&PCA_track);
 
 		//reject hit if seed track is too far off the wire
 		if(closest_approach.Mag() > 2.00)
@@ -951,6 +957,38 @@ void MillepedeCaller::print_fitted_track(gbl::GblTrajectory& trajectory) const
 		for (unsigned int j = 0; j < parameters.GetNrows(); ++j)
 		{
 			cout << "Parameter: " << j << " value: " << parameters[j] << endl;
+		}
+	}
+}
+
+
+void MillepedeCaller::check_efficiency(const GBL_seed_track& seed)
+{
+	TVector3 beginning_pos = seed.get_position();
+	TVector3 direction = seed.get_direction();
+
+	auto hit_list = seed.get_hit_detIDs();
+
+	double eff_dist;
+	Bool_t eff_has_hit;
+	m_efficiency_tree->SetBranchAddress("trackDistance",&eff_dist);
+	m_efficiency_tree->SetBranchAddress("hasHit",&eff_has_hit);
+
+	for(auto module: m_modules)
+	{
+		for(auto id: module.second)
+		{
+			TVector3 vtop, vbot;
+			m_survey.TubeEndPointsSurvey(id, vtop, vbot);
+			TVector3 distance_to_tube = calc_shortest_distance(vtop, vbot, beginning_pos, direction);
+			double track_distance = distance_to_tube.Mag();
+
+			if(track_distance < 1.85)
+			{
+				eff_dist = track_distance;
+				eff_has_hit = hit_list.end() != find(hit_list.begin(),hit_list.end(),id);
+				m_efficiency_tree->Fill();
+			}
 		}
 	}
 }
