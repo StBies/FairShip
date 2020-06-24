@@ -495,6 +495,7 @@ gbl::GblTrajectory MillepedeCaller::perform_GBL_refit(const GBL_seed_track& trac
 
 	vector <gbl::GblPoint> points = list_hits(&track, MODULE, sigma_spatial, pede_corrections, m_output_tree);
 	gbl::GblTrajectory traj(points,false); //param false for B=0
+	check_efficiency(track);
 
 	traj.milleOut(*m_gbl_mille_binary);
 	//check track validity
