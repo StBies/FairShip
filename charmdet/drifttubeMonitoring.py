@@ -2122,7 +2122,7 @@ def findSimpleEvent(event,nmin=2,nmax=6):
     muflux_Reco.sortHits(sTree.Digi_MufluxSpectrometerHits,spectrHitsSorted,True)
     nH  = {1:0,2:0,3:0,4:0}
     passed = True
-    for s in range(1,5):
+    for s in range(1,4):
         for l in range(4):
             for hit in spectrHitsSorted[0][s][l]:  nH[s]+=1
         if nH[s]<nmin or nH[s]>nmax: passed = False
@@ -8035,7 +8035,7 @@ def GBL_refit(nEvent=-1,nTot=1000,PR=13,minP=10.,pede_results = None, cpp_pede =
                     if s < 1 or s > 4: 
                         print "error with rawM", rawM.getDetId()
                     stations[s]+=1
-                if not (stations[1]>1 and stations[2]>1 and stations[3]>1 and stations[4]>1) : continue
+                if not (stations[1]>1 and stations[2]>1 and stations[3]>1) : continue
                 genfit_tracks.append(ROOT.genfit.Track(aTrack))                
         end_time = time.time()
         for aTrack in trackCandidates:   aTrack.Delete()
