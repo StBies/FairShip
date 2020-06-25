@@ -8026,7 +8026,7 @@ def GBL_refit(nEvent=-1,nTot=1000,PR=13,minP=10.,pede_results = None, cpp_pede =
                     Ypos = RPCtracks['Y'][0][0]*cuts["zRPC1"]+RPCtracks['Y'][0][1]
                     distY = ROOT.TMath.Abs(posRPC[1]-Ypos)
                     if abs(distX)<cuts['muTrackMatchX'] and abs(distY)<cuts['muTrackMatchY']: muonTag = True
-                if not muonTag: continue
+#                 if not muonTag: continue
                 # check for hits in each station
                 stations={1:0,2:0,3:0,4:0}
                 for p in aTrack.getPoints():
