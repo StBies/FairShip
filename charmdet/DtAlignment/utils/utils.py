@@ -332,7 +332,7 @@ def reshape_spectrum(tracks,n_selected_tracks):
     #Consistency check:
     if n_selected_tracks >= len(tracks):
         print("Resampling: set # selected tracks of {} is larger than the # of all tracks: {}".format(n_selected_tracks,len(tracks)))
-        n_selected_tracks = 0.05 * len(tracks)
+        n_selected_tracks = 0.01 * len(tracks)
         print("Using instead: {}, according to 5% of original sample size".format(n_selected_tracks))
     
     # 1. Find minimum and maximum slope
@@ -346,6 +346,7 @@ def reshape_spectrum(tracks,n_selected_tracks):
         last_hit = track.getFittedState(n_hits - 1)
         direction = last_hit.getPos() - first_hit.getPos()
         slope_x = direction[0] / direction[2]
+        print("Unsampled slope: ".format(slope_x))
         slope_list.append([slope_x,i])
         
         if slope_x < min_slope_x:
@@ -354,14 +355,15 @@ def reshape_spectrum(tracks,n_selected_tracks):
             max_slope_x = slope_x
             
     print("Minimum slope: {}, maximum slope: {}".format(min_slope_x,max_slope_x))
-    n_bins = 100
+    n_bins = 60
     slope_dist = TH1D("Genfit slope distribution","slope distribution",n_bins,min_slope_x,max_slope_x)
     bin_width = slope_dist.GetBinWidth(0)
-    entries_per_bin = n_selected_tracks / n_bins
+#     entries_per_bin = n_selected_tracks / n_bins
     print("Using {} bins with width {}, each containing ca. {} entries".format(n_bins,bin_width,entries_per_bin))
     for slope in slope_list:
         slope_dist.Fill(slope[0])
     print("Entries in slope distribution: {}".format(slope_dist.GetEntries()))
+    entries_per_bin = 0.05 * slope_dist[slope_dist.GetMaximumBin()]
     
     # 2. Calculate probabilty to select a track whose slope is in a certain bin of the slope distribution
     selection_probability = TH1D("resampling prob","sampling probability",n_bins, min_slope_x, max_slope_x)
@@ -373,7 +375,7 @@ def reshape_spectrum(tracks,n_selected_tracks):
             selection_probability[i] = entries_per_bin / slope_dist[i]
         else:
             selection_probability[i] = 1
-        print("Probability for bin {}: {}".format(i,selection_probability[i]))
+        print("sampling prob: {}\t{}".format(selection_probability.GetBinCenter(i),selection_probability[i]))
         
     # 3. Select the tracks
     print("Beginning track selection")
@@ -384,6 +386,7 @@ def reshape_spectrum(tracks,n_selected_tracks):
         rnd = np.random.uniform(0.0,1.0)
         if rnd < probabily:
             selected_tracks.append(slope[1])
+            print("resampled slope: ".format(slope[0]))
             
     return selected_tracks
     

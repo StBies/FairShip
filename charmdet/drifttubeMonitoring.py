@@ -8252,7 +8252,7 @@ elif options.command == "GBL_MC":
     else:
         milleCaller.MC_GBL_refit(n_mc_tracks,350e-4,n_min_hits,0)
 elif options.command == "GBL_refit":
-    reshape = False #reshape spectrum to be more uniformly distributed
+    reshape = True #reshape spectrum to be more uniformly distributed
     importRTrel()
     withDefaultAlignment = True
     withCorrections = False 
