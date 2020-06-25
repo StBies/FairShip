@@ -346,7 +346,7 @@ def reshape_spectrum(tracks,n_selected_tracks):
         last_hit = track.getFittedState(n_hits - 1)
         direction = last_hit.getPos() - first_hit.getPos()
         slope_x = direction[0] / direction[2]
-        print("Unsampled slope: ".format(slope_x))
+        print("Unsampled slope: {}".format(slope_x))
         slope_list.append([slope_x,i])
         
         if slope_x < min_slope_x:
@@ -386,7 +386,7 @@ def reshape_spectrum(tracks,n_selected_tracks):
         rnd = np.random.uniform(0.0,1.0)
         if rnd < probabily:
             selected_tracks.append(slope[1])
-            print("resampled slope: ".format(slope[0]))
+            print("resampled slope: {}".format(slope[0]))
             
     return selected_tracks
     
