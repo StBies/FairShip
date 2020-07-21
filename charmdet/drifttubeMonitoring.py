@@ -8243,7 +8243,7 @@ elif options.command == "test":
     yep.stop()
     print "finished"
 elif options.command == "GBL_MC":
-    n_mc_tracks = int(5e7)
+    n_mc_tracks = int(5e4)
     n_min_hits = 6 #Minimum number of hits (total)
     filename = "GBL_MC_" + str(n_mc_tracks) + "_tracks.mille_bin"
     milleCaller = ROOT.MillepedeCaller(filename)
