@@ -509,7 +509,7 @@ gbl::GblTrajectory MillepedeCaller::perform_GBL_refit(const GBL_seed_track& trac
 	cout << "Refit chi2: " << chi2 << " Ndf: " << ndf << endl;
 	cout << "Prob: " << TMath::Prob(chi2,ndf) << endl;
 	print_fitted_residuals(traj);
-	print_fitted_track(traj);
+//	print_fitted_track(traj);
 
 	return traj;
 }
@@ -544,8 +544,8 @@ double MillepedeCaller::MC_GBL_refit(unsigned int n_tracks, double smearing_sigm
 	for(unsigned int i = 0; i < n_tracks; ++i)
 	{
 		//case for boosted tracks
-		tracks[i] = MC_gen_track_boosted();
-//		tracks[i] = MC_gen_track();
+//		tracks[i] = MC_gen_track_boosted();
+		tracks[i] = MC_gen_track();
 	}
 
 
